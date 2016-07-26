@@ -3,6 +3,9 @@ import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
 
+'''
+I can't upload the dataset that I used because it's a free but copyrighted downloadable sample from a stats website.
+'''
 dataset = pd.read_excel('nba-sample.xlsx')
 
 len(dataset)
