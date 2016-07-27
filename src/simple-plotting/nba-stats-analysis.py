@@ -6,7 +6,7 @@ import pandas as pd
 '''
 I can't upload the dataset that I used because it's a free but copyrighted downloadable sample from a stats website.
 '''
-dataset = pd.read_excel('nba-sample.xlsx')
+dataset = pd.read_excel('../../data/nba-sample.xlsx')
 
 len(dataset)
 

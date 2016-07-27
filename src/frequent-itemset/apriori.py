@@ -14,7 +14,7 @@ def join(set1, set2):
 		else:
 			return []
 
-raw_dataset = pd.read_csv("receipts.csv", "r", header=None)[0]
+raw_dataset = pd.read_csv("../../data/receipts.csv", "r", header=None)[0]
 
 dataset = []
 for itemset in raw_dataset:

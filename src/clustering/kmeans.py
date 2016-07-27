@@ -10,7 +10,7 @@ DIM = 2
 # resolution of the data
 EPS = 0.01
 
-_csv_path = "2d-sample.csv"
+_csv_path = "../../data/2d-sample.csv"
 _delimiter = ","
 _engine = "python"
 _f_size = (25, 10)
