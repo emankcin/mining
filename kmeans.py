@@ -13,24 +13,22 @@ f_size = (25, 10)
 
 dataset = pd.read_csv(csv_path, "r", delimiter=delimiter, engine=engine, header=None)
 
-minX = min(dataset[0])
-minY = min(dataset[1])
-maxX = max(dataset[0])
-maxY = max(dataset[1])
-xDist = np.absolute(maxX - minX)
-yDist = np.absolute(maxY - minY)
+minValues = [min(dataset[i]) for i in range(dim)]
+maxValues = [max(dataset[i]) for i in range(dim)]
+dimLengths = list(np.absolute(np.array(maxValues) - np.array(minValues)))
 
+# generate a random point inside the given data range
 def generatePoint():
-    return [minX + np.random.rand() * xDist, minY + np.random.rand() * yDist]
+    return [(minValues[i] + np.random.rand() * dimLengths[i]) for i in range(dim)]
+
+# euclidean distance
+def dist(x, y):
+    return np.sqrt(sum([(x[i] - y[i])**2 for i in range(min(len(x), len(y)))]))
 
 def kmeans(data, k=4):
-    centroids = []  
-    for i in range(k):
-        centroids.append(generatePoint())
+    centroids = [generatePoint() for i in range(k)]
     centroidsFrame = pd.DataFrame(centroids)
-    clusters = []
-    for i in range(k):
-        clusters.append([])
+    clusters = [[] for i in range(k)]
     kmeans_h(data, k, centroids, clusters, centroidsFrame)
 
 def kmeans_h(data, k, centroids, clusters, centroidsFrame):
@@ -47,7 +45,7 @@ def kmeans_h(data, k, centroids, clusters, centroidsFrame):
         kmeans_h(data, k, centroids, clusters, centroidsFrame)        
         for i in range(k):
             for j in range(k):
-                if (centroids[i][0] - centroids[j][0])**2 + (centroids[i][1] - centroids[j][1])**2 < 5:
+                if dist(centroids[i], centroids[j]) < 5:
                     centroids[j] = generatePoint()
     
 def updateMeans(clusters, centroids):
@@ -61,13 +59,13 @@ def updateMeans(clusters, centroids):
                 flag = True
         centroids[i][0] = np.mean(clusters[i], axis=0)[0]
         centroids[i][1] = np.mean(clusters[i], axis=0)[1]
-    mus = pd.DataFrame(centroids)
-    return (flag, centroids, mus)
+    centroidsFrame = pd.DataFrame(centroids)
+    return (flag, centroids, centroidsFrame)
 
 def getNearestMeanIndex(point, means):
     dists = []
     for mean in means:
-        dists.append((point[0] - mean[0])**2 + (point[1] - mean[1])**2)
+        dists.append(dist(point, mean))
     minidx = 0
     for i in range(len(dists)):
         if(dists[i] < dists[minidx]):
@@ -79,6 +77,6 @@ def plotMeans(ax, centroidsFrame, centroids, k):
     for i in range(k):
         x = centroids[i][0]
         y = centroids[i][1]
-        ax.annotate(u'µ_'+str(i+1), xy=(x,y), xytext=(x+xDist/float(100),y+0.2))
+        ax.annotate(u'µ_'+str(i+1), xy=(x,y), xytext=(x+dimLengths[0]/float(100),y+dimLengths[1]/float(100)))
 
 kmeans(dataset, k=4)
