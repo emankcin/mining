@@ -77,6 +77,6 @@ def plotMeans(ax, mus, centroids, k):
     for i in range(k):
         x = centroids[i][0]
         y = centroids[i][1]
-        ax.annotate(u'µ_'+str(i+1), xy=(x,y), xytext=(x+0.2,y+0.2))
+        ax.annotate(u'µ_'+str(i+1), xy=(x,y), xytext=(x+xDist/float(100),y+0.2))
 
-kmeans(dataset, k=5)
+kmeans(dataset, k=4)
