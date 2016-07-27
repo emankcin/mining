@@ -1,13 +1,13 @@
 src-folders:
 
-*** clustering
-** kmeans
+* clustering
+    - kmeans
 
-*** frequent-itemset
-** apriori
+* frequent-itemset
+    - apriori
 
-*** simple-plotting
-** nba-stats-analysis
-* bar-plot
-* box-plot
-* scatter-plot
+* simple-plotting
+    - nba-stats-analysis
+        - bar-plot
+        - box-plot
+        - scatter-plot
