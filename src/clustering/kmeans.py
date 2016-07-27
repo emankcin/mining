@@ -25,7 +25,6 @@ _dim_lengths = list(np.absolute(np.array(_max_values) - np.array(_min_values)))
 def kmeans(data, k=4):
     # 1) initialize means
     centroids = [_generate_point() for i in range(k)]
-    centroids = pd.DataFrame(centroids).transpose()
     # 2) start iterative adaptation of means
     _kmeans_h(data, k, centroids)
 
@@ -50,11 +49,13 @@ def _kmeans_h(data, k, centroids):
         _plot_data_and_means(data, centroids, k)
         clusters = [[] for i in range(k)]
         for i in data.transpose():
-            point = list(data.transpose()[i])
+            point = [data[0][i], data[1][i]]
             idx = _get_nearest_mean_index(point, centroids)
             clusters[idx].append(point)
         (means_have_changed, centroids) = _update_means(clusters, centroids)
-    
+
+# computes the new means of clusters and indicates if old and new means differ
+# returns (meansHaveChanged, updatedCentroids)
 def _update_means(clusters, centroids):
     flag = False
     for i in range(len(clusters)):
@@ -68,18 +69,22 @@ def _update_means(clusters, centroids):
         centroids[i][1] = np.mean(clusters[i], axis=0)[1]
     return (flag, centroids)
 
+# returns index in means of neareast mean respective to point
 def _get_nearest_mean_index(point, means):
     dists = []
-    for idx in means:
-        dists.append(_dist(point, means[idx]))
+    for mean in means:
+        dists.append(_dist(point, mean))
     min_idx = 0
     for i in range(len(dists)):
         if(dists[i] < dists[min_idx]):
             min_idx = i
     return min_idx
 
+# plots data points and annotated means
 def _plot_means(ax, centroids, k):
-    centroids.transpose().plot(ax = ax, kind="scatter", x=0, y=1, figsize=_f_size, color="red")
+    # plot data points and means
+    pd.DataFrame(centroids).plot(ax = ax, kind="scatter", x=0, y=1, figsize=_f_size, color="red")
+    # annotate means
     for i in range(k):
         x = centroids[i][0]
         y = centroids[i][1]
