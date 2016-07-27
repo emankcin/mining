@@ -5,78 +5,86 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-csv_path = "2d-sample.csv"
-dim = 2
-delimiter = ","
-engine = "python"
-f_size = (25, 10)
+# dimensionality of the data
+DIM = 2
+# resolution of the data
+EPS = 0.01
 
-dataset = pd.read_csv(csv_path, "r", delimiter=delimiter, engine=engine, header=None)
+_csv_path = "2d-sample.csv"
+_delimiter = ","
+_engine = "python"
+_f_size = (25, 10)
 
-minValues = [min(dataset[i]) for i in range(dim)]
-maxValues = [max(dataset[i]) for i in range(dim)]
-dimLengths = list(np.absolute(np.array(maxValues) - np.array(minValues)))
+_dataset = pd.read_csv(_csv_path, "r", delimiter=_delimiter, engine=_engine, header=None)
 
-# generate a random point inside the given data range
-def generatePoint():
-    return [(minValues[i] + np.random.rand() * dimLengths[i]) for i in range(dim)]
+_min_values = [min(_dataset[i]) for i in range(DIM)]
+_max_values = [max(_dataset[i]) for i in range(DIM)]
+_dim_lengths = list(np.absolute(np.array(_max_values) - np.array(_min_values)))
+
+"""Iteratively computes k means of clusters for data of type DataFrame"""
+def kmeans(data, k=4):
+    # 1) initialize means
+    centroids = [_generate_point() for i in range(k)]
+    centroids = pd.DataFrame(centroids).transpose()
+    # 2) start iterative adaptation of means
+    _kmeans_h(data, k, centroids)
 
 # euclidean distance
-def dist(x, y):
-    return np.sqrt(sum([(x[i] - y[i])**2 for i in range(min(len(x), len(y)))]))
+def _dist(x, y):
+    return np.sqrt(sum([(x[i] - y[i])**2 for i in range(DIM)]))
 
-def kmeans(data, k=4):
-    centroids = [generatePoint() for i in range(k)]
-    centroidsFrame = pd.DataFrame(centroids)
-    clusters = [[] for i in range(k)]
-    kmeans_h(data, k, centroids, clusters, centroidsFrame)
+# generate a random point inside the given data range
+def _generate_point():
+    return [(_min_values[i] + np.random.rand() * _dim_lengths[i]) for i in range(DIM)]
 
-def kmeans_h(data, k, centroids, clusters, centroidsFrame):
-    ax = data.plot(kind="scatter", x=0, y=1, figsize=f_size)
-    plotMeans(ax, centroidsFrame, centroids, k)
+# plots data points and then centroids on top of it
+def _plot_data_and_means(data, centroids, k):
+    ax = data.plot(kind="scatter", x=0, y=1, figsize=_f_size)
+    _plot_means(ax, centroids, k)
     plt.show()
-    for i in range(k):
-        clusters[i] = []
-    for i in range(len(dataset)):
-        idx = getNearestMeanIndex([data[0][i], data[1][i]], centroids)
-        clusters[idx].append([data[0][i], data[1][i]])
-    (hasChanged, centroids, centroidsFrame) = updateMeans(clusters, centroids)
-    if True == hasChanged:
-        kmeans_h(data, k, centroids, clusters, centroidsFrame)        
-        for i in range(k):
-            for j in range(k):
-                if dist(centroids[i], centroids[j]) < 5:
-                    centroids[j] = generatePoint()
+
+# plots data and means and updates means until means don't change anymore
+def _kmeans_h(data, k, centroids):
+    means_have_changed = True
+    while means_have_changed == True:
+        _plot_data_and_means(data, centroids, k)
+        clusters = [[] for i in range(k)]
+        for i in data.transpose():
+            point = list(data.transpose()[i])
+            idx = _get_nearest_mean_index(point, centroids)
+            clusters[idx].append(point)
+        (means_have_changed, centroids) = _update_means(clusters, centroids)
     
-def updateMeans(clusters, centroids):
+def _update_means(clusters, centroids):
     flag = False
     for i in range(len(clusters)):
         if clusters[i] == []:
-            centroids[i] = generatePoint() 
+            centroids[i] = _generate_point() 
             continue       
         if flag == False:
-            if np.absolute(centroids[i][0] - np.mean(clusters[i], axis=0)[0]) > 0.01:
+            if np.absolute(centroids[i][0] - np.mean(clusters[i], axis=0)[0]) > EPS:
                 flag = True
         centroids[i][0] = np.mean(clusters[i], axis=0)[0]
         centroids[i][1] = np.mean(clusters[i], axis=0)[1]
-    centroidsFrame = pd.DataFrame(centroids)
-    return (flag, centroids, centroidsFrame)
+    return (flag, centroids)
 
-def getNearestMeanIndex(point, means):
+def _get_nearest_mean_index(point, means):
     dists = []
-    for mean in means:
-        dists.append(dist(point, mean))
-    minidx = 0
+    for idx in means:
+        dists.append(_dist(point, means[idx]))
+    min_idx = 0
     for i in range(len(dists)):
-        if(dists[i] < dists[minidx]):
-            minidx = i
-    return minidx
+        if(dists[i] < dists[min_idx]):
+            min_idx = i
+    return min_idx
 
-def plotMeans(ax, centroidsFrame, centroids, k):
-    centroidsFrame.plot(ax = ax, kind="scatter", x=0, y=1, figsize=f_size, color="red")
+def _plot_means(ax, centroids, k):
+    centroids.transpose().plot(ax = ax, kind="scatter", x=0, y=1, figsize=_f_size, color="red")
     for i in range(k):
         x = centroids[i][0]
         y = centroids[i][1]
-        ax.annotate(u'µ_'+str(i+1), xy=(x,y), xytext=(x+dimLengths[0]/float(100),y+dimLengths[1]/float(100)))
+        offset_x = _dim_lengths[0]/float(100)
+        offset_y = _dim_lengths[1]/float(100)
+        ax.annotate(u'µ_'+str(i+1), xy=(x,y), xytext=(x+offset_x,y+offset_y))
 
-kmeans(dataset, k=4)
+kmeans(_dataset, k=4)
