@@ -4,6 +4,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 from pandas import DataFrame
+from scipy.spatial.distance import euclidean
 
 # dimensionality of dataset
 DIM = 2
@@ -15,43 +16,46 @@ FIG_SIZE = (25, 10)
 
 # euclidean distance
 def _dist(x, y):
-    return np.sqrt(sum([(x[i] - y[i])**2 for i in range(DIM)]))
+    return euclidean(x, y)
 
 # returns index in means of neareast mean respective to point
 def _get_nearest_mean_index(point, means):
-    return np.argsort([_dist(point, mean) for mean in means])[0]
+    return np.argmin([_dist(point, mean) for mean in means])
 
-class K_Means_Handler:
+class K_Means:
 
     """Construct K_Means_Handler object from two-dimensional dataset"""
     def __init__(self, dataset):
         self._dataset = dataset
         self._min_values = [min(self._dataset[i]) for i in range(DIM)]
         self._max_values = [max(self._dataset[i]) for i in range(DIM)]
-        self._dim_lengths = list(abs(np.array(self._max_values) - np.array(self._min_values)))
+        self._dim_lengths = [abs(self._max_values[i] - self._min_values[i]) for i in range(DIM)]
    
-    """Iteratively computes k means of clusters for data of type DataFrame"""
-    def kmeans(self, k=4):
+    """Iteratively computes means of k clusters for data of type DataFrame"""
+    def kmeans(self, k=4, visualizeSteps=False):
         # 1) initialize means
         centroids = [self._generate_point() for i in range(k)]
         # 2) start iterative adaptation of means
-        self._kmeans_h(k, centroids)
+        self._kmeans_h(k, centroids, visualizeSteps)
 
     # generate a random point inside the given data range
     def _generate_point(self):
-        return [(self._min_values[i] + np.random.rand() * self._dim_lengths[i]) for i in range(DIM)]
+        return [self._min_values[i] + np.random.rand() * self._dim_lengths[i] for i in range(DIM)]
 
     # plots data and means and updates means until means don't change anymore
-    def _kmeans_h(self, k, centroids):
-        means_have_changed = True
-        while means_have_changed == True:
-            self._plot_data_and_means(centroids, k)
+    def _kmeans_h(self, k, centroids, visualizeSteps):
+        while True:
+            if True == visualizeSteps:
+                self._plot_data_and_means(centroids, k)
             clusters = [[] for i in range(k)]
-            for i in self._dataset.transpose():
-                point = [self._dataset[0][i], self._dataset[1][i]]
+            for point in np.array(self._dataset).tolist():
                 idx = _get_nearest_mean_index(point, centroids)
                 clusters[idx].append(point)
             (means_have_changed, centroids) = self._update_means(clusters, centroids)
+            if(False == means_have_changed):
+                # plot end result
+                self._plot_data_and_means(centroids, k)
+                break
 
     # plots data points and then centroids on top of it
     def _plot_data_and_means(self, centroids, k):
@@ -62,26 +66,25 @@ class K_Means_Handler:
     # plots annotated means
     def _plot_means(self, ax, centroids, k):
         # plot means
-        DataFrame(centroids).plot(ax = ax, kind="scatter", x=0, y=1, figsize=FIG_SIZE, color="red")
+        bx = DataFrame(centroids).plot(ax = ax, kind="scatter", x=0, y=1, figsize=FIG_SIZE, color="red")
         # annotate means
         for i in range(k):
-            x = centroids[i][0]
-            y = centroids[i][1]
-            offset_x = self._dim_lengths[0]/float(100)
-            offset_y = self._dim_lengths[1]/float(100)
-            ax.annotate(u'µ_'+str(i+1), xy=(x,y), xytext=(x+offset_x,y+offset_y))
+            (x,y) = tuple(centroids[i])
+            (offset_x, offset_y) = tuple(np.array(self._dim_lengths)/float(100))
+            bx.annotate(u'µ_'+str(i+1), xy=(x,y), xytext=(x+offset_x,y+offset_y))
 
-    # computes the new means of clusters and indicates if old and new means differ
+    # computes new means of clusters and indicates if old and new means differ
     # returns (meansHaveChanged, updatedCentroids)
     def _update_means(self, clusters, centroids):
         flag = False
         for i in range(len(clusters)):
             if clusters[i] == []:
-                centroids[i] = self._generate_point() 
-                continue       
-            if flag == False:
-                if abs(centroids[i][0] - np.mean(clusters[i], axis=0)[0]) > EPS:
-                    flag = True
-            centroids[i][0] = np.mean(clusters[i], axis=0)[0]
-            centroids[i][1] = np.mean(clusters[i], axis=0)[1]
+                centroids[i] = self._generate_point()
+                flag = True        
+            else:
+                if flag == False:
+                    for j in range(DIM):
+                        if abs(centroids[i][j] - np.mean(clusters[i], axis=0)[j]) > EPS:
+                            flag = True
+                centroids[i] = np.mean(clusters[i], axis=0)
         return (flag, centroids)
