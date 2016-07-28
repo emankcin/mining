@@ -2,11 +2,8 @@
 # -*- coding: utf-8 -*-
 import matplotlib
 import matplotlib.pyplot as plt
-import pandas as pd
 import numpy as np
-
-CSV_PATH = "../../data/2d-sample.csv"
-CSV_COLUMN_DELIMITER = ","
+from pandas import DataFrame
 
 # dimensionality of dataset
 DIM = 2
@@ -18,7 +15,7 @@ FIG_SIZE = (25, 10)
 
 class K_Means_Handler:
 
-    """Construct kmeans object"""
+    """Construct K_Means_Handler object from two-dimensional dataset"""
     def __init__(self, dataset):
         self._dataset = dataset
         self._min_values = [min(self._dataset[i]) for i in range(DIM)]
@@ -32,19 +29,9 @@ class K_Means_Handler:
         # 2) start iterative adaptation of means
         self._kmeans_h(k, centroids)
 
-    # euclidean distance
-    def _dist(self, x, y):
-        return np.sqrt(sum([(x[i] - y[i])**2 for i in range(DIM)]))
-
     # generate a random point inside the given data range
     def _generate_point(self):
         return [(self._min_values[i] + np.random.rand() * self._dim_lengths[i]) for i in range(DIM)]
-
-    # plots data points and then centroids on top of it
-    def _plot_data_and_means(self, centroids, k):
-        ax = self._dataset.plot(kind="scatter", x=0, y=1, figsize=FIG_SIZE)
-        self._plot_means(ax, centroids, k)
-        plt.show()
 
     # plots data and means and updates means until means don't change anymore
     def _kmeans_h(self, k, centroids):
@@ -57,6 +44,39 @@ class K_Means_Handler:
                 idx = self._get_nearest_mean_index(point, centroids)
                 clusters[idx].append(point)
             (means_have_changed, centroids) = self._update_means(clusters, centroids)
+
+    # plots data points and then centroids on top of it
+    def _plot_data_and_means(self, centroids, k):
+        ax = self._dataset.plot(kind="scatter", x=0, y=1, figsize=FIG_SIZE)
+        self._plot_means(ax, centroids, k)
+        plt.show()
+
+    # plots annotated means
+    def _plot_means(self, ax, centroids, k):
+        # plot means
+        DataFrame(centroids).plot(ax = ax, kind="scatter", x=0, y=1, figsize=FIG_SIZE, color="red")
+        # annotate means
+        for i in range(k):
+            x = centroids[i][0]
+            y = centroids[i][1]
+            offset_x = self._dim_lengths[0]/float(100)
+            offset_y = self._dim_lengths[1]/float(100)
+            ax.annotate(u'µ_'+str(i+1), xy=(x,y), xytext=(x+offset_x,y+offset_y))
+
+    # returns index in means of neareast mean respective to point
+    def _get_nearest_mean_index(self, point, means):
+        dists = []
+        for mean in means:
+            dists.append(self._dist(point, mean))
+        min_idx = 0
+        for i in range(len(dists)):
+            if(dists[i] < dists[min_idx]):
+                min_idx = i
+        return min_idx
+
+    # euclidean distance
+    def _dist(self, x, y):
+        return np.sqrt(sum([(x[i] - y[i])**2 for i in range(DIM)]))
 
     # computes the new means of clusters and indicates if old and new means differ
     # returns (meansHaveChanged, updatedCentroids)
@@ -72,40 +92,3 @@ class K_Means_Handler:
             centroids[i][0] = np.mean(clusters[i], axis=0)[0]
             centroids[i][1] = np.mean(clusters[i], axis=0)[1]
         return (flag, centroids)
-
-    # returns index in means of neareast mean respective to point
-    def _get_nearest_mean_index(self, point, means):
-        dists = []
-        for mean in means:
-            dists.append(self._dist(point, mean))
-        min_idx = 0
-        for i in range(len(dists)):
-            if(dists[i] < dists[min_idx]):
-                min_idx = i
-        return min_idx
-
-    # plots annotated means
-    def _plot_means(self, ax, centroids, k):
-        # plot means
-        pd.DataFrame(centroids).plot(ax = ax, kind="scatter", x=0, y=1, figsize=FIG_SIZE, color="red")
-        # annotate means
-        for i in range(k):
-            x = centroids[i][0]
-            y = centroids[i][1]
-            offset_x = self._dim_lengths[0]/float(100)
-            offset_y = self._dim_lengths[1]/float(100)
-            ax.annotate(u'µ_'+str(i+1), xy=(x,y), xytext=(x+offset_x,y+offset_y))
-
-def _load_data(path, delim):
-        engine = "python"
-        dataset = pd.read_csv(path, "r", delimiter=delim, engine=engine, header=None)
-        return dataset
-
-"""Apply kmeans to dataset"""
-def main():
-    dataset = _load_data(CSV_PATH, CSV_COLUMN_DELIMITER)
-    km = K_Means_Handler(dataset)
-    km.kmeans(k=4)
-
-if __name__ == "__main__":
-    main()
