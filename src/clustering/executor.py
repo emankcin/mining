@@ -15,7 +15,7 @@ def main():
     dataset = _load_csv_data(CSV_PATH, CSV_COLUMN_DELIMITER)
     handler = K_Means(dataset)
 
-    handler.kmeans(k=4, visualizeSteps=False)
+    handler.kmeans(visualizeSteps=True)
 
 if __name__ == "__main__":
     main()
