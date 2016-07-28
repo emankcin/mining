@@ -1,18 +1,19 @@
 import pandas as pd
 
 def join(set1, set2):
-	if len(set1) != len(set2):
+	length = len(set1)
+	if length != len(set2)
 		return []
 	else:
-		length = len(set1)
-		suffixes = [set1.pop(length - 1)]
-		suffixes.append(set2.pop(length - 1))
-		prefix = set1
-		if prefix == set2:
-			prefix.extend(suffixes)
-			return sorted(prefix)
-		else:
+		common_length = length - 1
+		cset = set1[:common_length]
+		if cset is not set2[:common_length]:
 			return []
+		else:
+			suffixes = [set1[common_length], set2[common_length]]
+			suffixes.sort()
+			cset.extend(suffixes)
+			return cset
 
 raw_dataset = pd.read_csv("../../data/receipts.csv", "r", header=None)[0]
 
