@@ -13,9 +13,15 @@ def _load_csv_data(path, delim):
 """Apply kmeans to dataset"""
 def main():
     dataset = _load_csv_data(CSV_PATH, CSV_COLUMN_DELIMITER)
-    handler = K_Means(dataset)
+    k = 2
+    max_iter = 10
 
-    handler.kmeans(visualizeSteps=True)
+    handler = K_Means(dataset, k=k, visualizeSteps=False)
+    handler.kmeans()
+    while k < max_iter:
+    	handler.reinitialize(k=k, visualizeSteps=False)
+    	handler.kmeans()
+    	k += 1
 
 if __name__ == "__main__":
     main()

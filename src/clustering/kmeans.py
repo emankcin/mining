@@ -26,20 +26,16 @@ class K_Means:
         self._min_values = [min(self._dataset[i]) for i in range(DIM)]
         self._max_values = [max(self._dataset[i]) for i in range(DIM)]
         self._dim_lengths = [abs(self._max_values[i] - self._min_values[i]) for i in range(DIM)]
-
-        self._centroids = [self._generate_point() for i in range(k)]
-        self._clusters = [[] for i in range(k)]
-        self._k = k
+        self.reinitialize(k)
 
     """Update object using new value for k"""
-    def reinitialize(k):
-        if k is not self._k:
-            self._k = k
-            self._centroids = [self._generate_point() for i in range(k)]
+    def reinitialize(self, k=4):
+        self._k = k
+        self._clusters = [[] for i in range(k)]
+        self._centroids = [self._generate_point() for i in range(k)]
 
-    """Computes centroids of k clusters"""
+    """Compute centroids of k clusters"""
     def kmeans(self, visualizeSteps=False):
-        # plots data and centroids and updates centroids until they don't change anymore
         while True:
             if visualizeSteps:
                 self._visualize_step()
@@ -54,7 +50,7 @@ class K_Means:
     def _generate_point(self):
         return [self._min_values[i] + np.random.rand() * self._dim_lengths[i] for i in range(DIM)]
 
-    # returns index of centroid which is nearest to point
+    # return index of centroid which is nearest to point
     def _get_nearest_centroid_index(self, point):
         return np.argmin([_dist(point, centroid) for centroid in self._centroids])
 
@@ -64,7 +60,7 @@ class K_Means:
             idx = self._get_nearest_centroid_index(point)
             self._clusters[idx].append(point)
 
-    # plots data points and then centroids on top of it
+    # plot data points and then centroids on top of it
     def _visualize_step(self):
         # plot data points
         ax = self._dataset.plot(kind="scatter", x=0, y=1, figsize=FIG_SIZE)
@@ -73,7 +69,7 @@ class K_Means:
         # show plots
         plt.show()
 
-    # plots annotated centroids
+    # plot annotated centroids
     def _plot_centroids(self, ax):
         # plot centroids
         bx = DataFrame(np.array(self._centroids)).plot(ax = ax, kind="scatter", x=0, y=1, figsize=FIG_SIZE, color="red")
@@ -83,7 +79,7 @@ class K_Means:
             (offset_x, offset_y) = tuple(np.array(self._dim_lengths)/float(100))
             bx.annotate(u'µ_'+str(i+1), xy=(x,y), xytext=(x+offset_x,y+offset_y))
 
-    # computes new centroids of clusters and returns True if centroids have changed
+    # compute new centroids of clusters and return True if centroids have changed
     def _update_centroids(self):
         stable_result = True
         for i in range(len(self._clusters)):
