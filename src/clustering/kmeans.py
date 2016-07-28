@@ -13,6 +13,21 @@ EPS = 0.01
 # size of figure: (width, height) in inches
 FIG_SIZE = (25, 10)
 
+# euclidean distance
+def _dist(x, y):
+    return np.sqrt(sum([(x[i] - y[i])**2 for i in range(DIM)]))
+
+# returns index in means of neareast mean respective to point
+def _get_nearest_mean_index(point, means):
+    dists = []
+    for mean in means:
+        dists.append(_dist(point, mean))
+    min_idx = 0
+    for i in range(len(dists)):
+        if(dists[i] < dists[min_idx]):
+            min_idx = i
+    return min_idx
+
 class K_Means_Handler:
 
     """Construct K_Means_Handler object from two-dimensional dataset"""
@@ -41,7 +56,7 @@ class K_Means_Handler:
             clusters = [[] for i in range(k)]
             for i in self._dataset.transpose():
                 point = [self._dataset[0][i], self._dataset[1][i]]
-                idx = self._get_nearest_mean_index(point, centroids)
+                idx = _get_nearest_mean_index(point, centroids)
                 clusters[idx].append(point)
             (means_have_changed, centroids) = self._update_means(clusters, centroids)
 
@@ -62,21 +77,6 @@ class K_Means_Handler:
             offset_x = self._dim_lengths[0]/float(100)
             offset_y = self._dim_lengths[1]/float(100)
             ax.annotate(u'µ_'+str(i+1), xy=(x,y), xytext=(x+offset_x,y+offset_y))
-
-    # returns index in means of neareast mean respective to point
-    def _get_nearest_mean_index(self, point, means):
-        dists = []
-        for mean in means:
-            dists.append(self._dist(point, mean))
-        min_idx = 0
-        for i in range(len(dists)):
-            if(dists[i] < dists[min_idx]):
-                min_idx = i
-        return min_idx
-
-    # euclidean distance
-    def _dist(self, x, y):
-        return np.sqrt(sum([(x[i] - y[i])**2 for i in range(DIM)]))
 
     # computes the new means of clusters and indicates if old and new means differ
     # returns (meansHaveChanged, updatedCentroids)
