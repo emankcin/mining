@@ -19,14 +19,7 @@ def _dist(x, y):
 
 # returns index in means of neareast mean respective to point
 def _get_nearest_mean_index(point, means):
-    dists = []
-    for mean in means:
-        dists.append(_dist(point, mean))
-    min_idx = 0
-    for i in range(len(dists)):
-        if(dists[i] < dists[min_idx]):
-            min_idx = i
-    return min_idx
+    return np.argsort([_dist(point, mean) for mean in means])[0]
 
 class K_Means_Handler:
 
