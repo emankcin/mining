@@ -1,6 +1,6 @@
 import sys
 from pandas import read_csv
-from kmeans import K_Means
+from kmeans import KMeans
 
 
 CSV_PATH = "src/main/resources/2d-sample.csv"#sys.argv[1]
@@ -20,7 +20,7 @@ def main():
     k = 2
     max_iter = 10
 
-    handler = K_Means(dataset, k=k)
+    handler = KMeans(dataset, k=k)
     handler.kmeans()
     while k < max_iter:
         handler.reinitialize(k=k)

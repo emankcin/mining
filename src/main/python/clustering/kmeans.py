@@ -18,7 +18,7 @@ FIG_SIZE = (25, 10)
 def _dist(x, y):
     return euclidean(x, y)
 
-class K_Means:
+class KMeans:
 
     """Construct K_Means object from two-dimensional dataset of type DataFrame"""
     def __init__(self, dataset, k=4):
@@ -34,6 +34,18 @@ class K_Means:
         self._clusters = [[] for i in range(k)]
         self._centroids = [self._generate_point() for i in range(k)]
 
+    @property
+    def k(self):
+        return self._k
+    
+    @property
+    def centroids(self):
+        return self._centroids
+    
+    @property
+    def clusters(self):
+        return self._clusters
+    
     """Compute centroids of k clusters"""
     def kmeans(self, visualizeSteps=False):
         while True:
