@@ -1,8 +1,11 @@
+import sys
 from pandas import read_csv
 from kmeans import K_Means
 
-CSV_PATH = "../../data/2d-sample.csv"
+
+CSV_PATH = "src/main/resources/2d-sample.csv"#sys.argv[1]
 CSV_COLUMN_DELIMITER = ","
+
 
 def _load_csv_data(path, delim):
     engine = "python"
@@ -10,18 +13,19 @@ def _load_csv_data(path, delim):
 
     return dataset
 
+
 """Apply kmeans to dataset"""
 def main():
     dataset = _load_csv_data(CSV_PATH, CSV_COLUMN_DELIMITER)
     k = 2
     max_iter = 10
 
-    handler = K_Means(dataset, k=k, visualizeSteps=False)
+    handler = K_Means(dataset, k=k)
     handler.kmeans()
     while k < max_iter:
-    	handler.reinitialize(k=k, visualizeSteps=False)
-    	handler.kmeans()
-    	k += 1
+        handler.reinitialize(k=k)
+        handler.kmeans()
+        k += 1
 
 if __name__ == "__main__":
     main()

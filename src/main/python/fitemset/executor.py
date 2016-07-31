@@ -1,7 +1,10 @@
+import sys
 import pandas as pd
 from apriori.join import join
 
-raw_dataset = pd.read_csv("../../data/receipts.csv", "r", header=None)[0]
+receipts = "src/main/resources/receipts.csv"#sys.argv[1]
+description = "src/main/resources/item_description.csv"#sys.argv[2]
+raw_dataset = pd.read_csv(receipts, "r", header=None)[0]
 
 dataset = []
 for itemset in raw_dataset:
@@ -12,7 +15,7 @@ for itemset in raw_dataset:
 #####
 dataset = dataset[:60]
 
-item_description = pd.read_csv("../../data/item_description.csv", "r", header=None, delimiter=",", index_col=0, skiprows=1)
+item_description = pd.read_csv(description, "r", header=None, delimiter=",", index_col=0, skiprows=1)
 
 maxItems = len(item_description.index)
 
