@@ -17,7 +17,3 @@ class JoinTestCase(unittest.TestCase):
 
 	def test_join_sets_with_length_one(self):
 		self.assertEqual([1,2], join([1], [2]))
-
-#if __name__ == "__main__":
-#	suite = unittest.TestLoader().loadTestsFromTestCase(JoinTestCase)
-#	unittest.TextTestRunner(verbosity=1).run(suite)
