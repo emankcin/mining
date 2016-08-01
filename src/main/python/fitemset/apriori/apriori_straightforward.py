@@ -1,5 +1,6 @@
 from join import join
 
+
 def get_frequent_one_itemsets(dataset, max_items, min_sup):
     counts = {}
     for i in range(max_items):
@@ -15,8 +16,47 @@ def get_frequent_one_itemsets(dataset, max_items, min_sup):
     return set([i for i in counts.keys()])
 
 
-def apriori_without_hashsets(dataset, max_items, min_sup):
+def itemsets_self_join(list_of_itemsets):
+    k_result = {}
+    c = 0
+    ci = 0
+    for i in list_of_itemsets:
+        ci += 1
+        cj = 0
+        for j in list_of_itemsets:
+            cj += 1
+            if ci >= cj:
+                continue
+            joined = join(i, j)
+            if not joined:
+                continue
+            else:
+                k_result[c] = joined
+                c += 1
+    return k_result
 
+# parameter types: list of lists, dictionary, integer
+def get_frequent_n_itemsets(dataset, current_list, min_sup):
+    k_counts = {}
+    for row in dataset:
+        row = [int(float(i)) for i in row]
+        for key in current_list:
+            contained = set(current_list[key]).issubset(set(row))
+            if not contained:
+                continue
+            else:
+                if not tuple(current_list[key]) in k_counts:
+                    k_counts[tuple(current_list[key])] = 1
+                else:
+                    k_counts[tuple(current_list[key])] += 1
+    result = {}
+    for i in range(len(current_list)):
+        if tuple(current_list[i]) in k_counts and k_counts[tuple(current_list[i])] >= min_sup:
+            result[tuple(current_list[i])] = k_counts[tuple(current_list[i])]
+    return result
+
+
+def apriori_without_hashsets(dataset, max_items, min_sup):
     counts = get_frequent_one_itemsets(dataset, max_items, min_sup)
 
     result = {}
@@ -25,50 +65,16 @@ def apriori_without_hashsets(dataset, max_items, min_sup):
         result[i[0]] = list(i)
         end_result[i] = list(i)
 
-    cont = True
-    while cont:
-        cont = False
+    while True:
         # join list with itself
-        k_result = {}
-        c = 0
-        print "New iteration"
-        ci = 0
-        resl = [[i] for i in list(result)]
-        for i in resl:
-            ci += 1
-            cj = 0
-            for j in resl:
-                cj += 1
-                if ci >= cj:
-                    continue
-                joined = join(i, j)
-                if not joined:
-                    continue
-                else:
-                    k_result[c] = joined
-                    c += 1
-        k_counts = {}
-        for row in dataset:
-            row = [int(float(i)) for i in row]
-            for key in k_result:
-                contained = set(k_result[key]).issubset(set(row))
-                if not contained:
-                    continue
-                else:
-                    if not tuple(k_result[key]) in k_counts:
-                        k_counts[tuple(k_result[key])] = 1
-                    else:
-                        k_counts[tuple(k_result[key])] += 1
-        cont = False
-        result = {}
-        for i in range(len(k_result)):
-            if tuple(k_result[i]) in k_counts and k_counts[tuple(k_result[i])] >= min_sup:
-                end_result[tuple(k_result[i])] = k_counts[tuple(k_result[i])]
-                result[tuple(k_result[i])] = k_counts[tuple(k_result[i])]
-                cont = True
-        print end_result
-        if not cont:
+        k_result = itemsets_self_join(result)
+        k_result = get_frequent_n_itemsets(dataset, k_result, min_sup)
+        result = k_result
+        if k_result == {}:
             break
+        else:
+            print "New iteration"
+            end_result.update(k_result)
 
     print "Frequenet itemsets:"
     end_result = set(end_result)
