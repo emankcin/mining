@@ -38,8 +38,10 @@ def apriori_without_hashsets(dataset, max_items, min_sup):
     counts = get_frequent_one_itemsets(dataset, max_items, min_sup)
 
     result = {}
+    end_result = {}
     for i in counts:
-        result[i] = [i]
+        result[i[0]] = i
+        end_result[tuple(i)] = i
 
     cont = True
     while cont:
@@ -78,16 +80,18 @@ def apriori_without_hashsets(dataset, max_items, min_sup):
         cont = False
         result = {}
         for i in range(len(k_result)):
-            if tuple(k_result[i]) in k_counts and k_counts[tuple(k_result[i])] >= 1:
-                counts[tuple(k_result[i])] = k_counts[tuple(k_result[i])]
+            if tuple(k_result[i]) in k_counts and k_counts[tuple(k_result[i])] >= min_sup:
+                end_result[tuple(k_result[i])] = k_counts[tuple(k_result[i])]
                 result[tuple(k_result[i])] = k_counts[tuple(k_result[i])]
                 cont = True
-        print counts
+        print end_result
         if not cont:
             break
 
     print "Frequenet itemsets:"
-    print counts
+    end_result = set(end_result)
+    print end_result
+    return set(end_result)
 
 if __name__ == "__main__":
     receipts = "../../resources/receipts.csv"
