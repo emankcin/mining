@@ -23,10 +23,10 @@ def join(set1, set2):
 		and common_n_minus_one_length_prefix(set1, set2) \
 		and last_not_equal(set1, set2):
 		
-		common_set = set1[:-1]
+		common = set1[:-1]
 		suffixes = [set1[-1], set2[-1]]
 		suffixes.sort()
-		result = common_set + suffixes
+		result = common + suffixes
 		
 		return result
 	
