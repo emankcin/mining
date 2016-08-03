@@ -65,22 +65,10 @@ def construct_hash_tree(dic):
 
 def get_f_n_itemsets_w_hashtree(dataset, hash_tree, min_sup):
     result_dic = {}
-    k = hash_tree.values()[0]
     for ta in dataset:
+        ta = [int(float(i)) for i in ta]
         ta = list(np.sort(ta, kind='mergesort'))
-        for i in range(len(ta)-k+1):
-            str = ''
-            hash = ta[i] % k
-            str += hash + ','
-            for j in range(i+1, len(ta)-k+i+1):
-                hash = ta[j] % k
-                str += hash + ','
-            if str in hash_tree:
-                if hash_tree[str] == k:
-                    if hash_tree[str] in result_dic:
-                        result_dic[hash_tree[str]] += 1
-                    else:
-                        result_dic[hash_tree[str]] = 1
+        result_dic.update(hash_tree.get_itemsets_in_transaction(ta))
     return result_dic
 
 
@@ -94,13 +82,16 @@ def apriori_without_hashsets(dataset, max_items, min_sup):
 
     while True:
         k_result = itemsets_self_join(k_result)
-        print k_result
-        #hash_tree = construct_hash_tree(k_result)
-        #k_result = get_f_n_itemsets_w_hashtree(dataset, hash_tree, min_sup)
-        k_result = get_frequent_n_itemsets(dataset, k_result, min_sup)
+        if k_result == {}:
+            break
+        hash_tree = construct_hash_tree(k_result)
+        k_result = get_f_n_itemsets_w_hashtree(dataset, hash_tree, min_sup)
+        # k_result = get_frequent_n_itemsets(dataset, k_result, min_sup)
         if k_result == {}:
             break
         else:
             result.update(k_result)
 
+    print "result: "
+    print result
     return result
