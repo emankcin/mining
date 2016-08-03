@@ -1,5 +1,8 @@
 import unittest
-from fitemset.apriori.apriori_straightforward import get_frequent_one_itemsets, apriori_without_hashsets, get_frequent_n_itemsets, itemsets_self_join
+
+from fitemset.apriori.apriori_straightforward import get_frequent_one_itemsets, apriori_without_hashsets, \
+    get_frequent_n_itemsets, itemsets_self_join, construct_hash_tree
+
 
 class AprioriTest(unittest.TestCase):
     def setUp(self):
@@ -37,3 +40,8 @@ class AprioriTest(unittest.TestCase):
 
     def test_get_frequent_n_itemsets(self):
         self.assertEqual( [(1, 2), (1,3), (2, 3)], get_frequent_n_itemsets(self.dataset, {0:(1, 2), 1:(1, 3), 2:(2, 3)}, 4).keys())
+
+    def test_construct_hash_tree(self):
+        ht = construct_hash_tree({0: (1, 2), 1: (2, 3)})
+        self.assertTrue(ht.contains((1, 2)))
+        self.assertFalse(ht.contains((1, 3)))

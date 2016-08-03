@@ -21,6 +21,9 @@ class HashTree():
             return True
         elif self.level < self.k:
             hash = tup[self.level] % self.k
-            return self.children[hash].contains(tup)
+            if hash in self.children:
+                return self.children[hash].contains(tup)
+            else:
+                return False
         else:
             return False

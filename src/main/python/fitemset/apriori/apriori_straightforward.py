@@ -1,5 +1,7 @@
-from join import join
 import numpy as np
+
+from hash_tree import HashTree
+from join import join
 
 
 def get_frequent_one_itemsets(dataset, max_items, min_sup):
@@ -55,16 +57,11 @@ def get_frequent_n_itemsets(dataset, current_dic, min_sup):
     return result
 
 def construct_hash_tree(dic):
-    n = len(dic.keys()[0])
-    ret_dic = {}
-    str = ''
-    for i in dic.keys():
-        for j in i:
-            str += j % n + ','
-        if not str in ret_dic:
-            ret_dic[str] = {}
-        ret_dic[str][i] = n
-    return ret_dic
+    k = len(dic.values()[0])
+    ht = HashTree(k, 0)
+    for i in dic.values():
+        ht.insert(tuple(i))
+    return ht
 
 def get_f_n_itemsets_w_hashtree(dataset, hash_tree, min_sup):
     result_dic = {}
@@ -97,6 +94,7 @@ def apriori_without_hashsets(dataset, max_items, min_sup):
 
     while True:
         k_result = itemsets_self_join(k_result)
+        print k_result
         #hash_tree = construct_hash_tree(k_result)
         #k_result = get_f_n_itemsets_w_hashtree(dataset, hash_tree, min_sup)
         k_result = get_frequent_n_itemsets(dataset, k_result, min_sup)

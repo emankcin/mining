@@ -1,6 +1,7 @@
-import sys
 import pandas as pd
+
 from fitemset.apriori.apriori_straightforward import apriori_without_hashsets
+
 
 def convert_receipts(raw_dataset):
     dataset = []
@@ -16,13 +17,13 @@ def load_receipts_csv(path):
     return dataset
 
 def main():
-    receipts = "src/main/resources/receipts.csv"
-    description = "src/main/resources/item_description.csv"
+    receipts = "../../resources/receipts.csv"
+    description = "../../resources/item_description.csv"
 
-    if sys.argv[1]:
-        receipts = sys.argv[1]
-    if sys.argv[2]:
-        description = sys.argv[2]
+    #    if sys.argv[1]:
+    #       receipts = sys.argv[1]
+    #  if sys.argv[2]:
+    #     description = sys.argv[2]
 
     dataset = load_receipts_csv(receipts)
     dataset = dataset[:30]
