@@ -1,6 +1,6 @@
 import pandas as pd
 
-from fitemset.apriori.apriori_straightforward import apriori_without_hashsets
+from apriori.apriori import apriori
 
 
 def convert_receipts(raw_dataset):
@@ -32,7 +32,7 @@ def main():
 
     maxItems = len(item_description.index)
     min_sup = 3
-    apriori_without_hashsets(dataset, maxItems, min_sup)
+    apriori(dataset, maxItems, min_sup, with_hash_tree=False)
 
 if __name__ == "__main__":
     main()

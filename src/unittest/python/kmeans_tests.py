@@ -1,10 +1,12 @@
-import unittest
 import pandas as pd
+import unittest
+
 from clustering.kmeans import KMeans, _dist
+
 
 class KMeansTest(unittest.TestCase):
     def setUp(self):
-        dataset = pd.DataFrame([[1,2], [3,4], [4,5], [6,7]])
+        dataset = pd.DataFrame([[1, 2], [3, 4], [4, 5], [6, 7]])
         self.k = 4
         self.k_means = KMeans(dataset, k=self.k)
 
@@ -16,8 +18,8 @@ class KMeansTest(unittest.TestCase):
         self.assertEqual(new_k, len(self.k_means.centroids))
 
     def test_kmeans(self):
-    	self.k_means.kmeans()
-    	self.assertEqual(self.k, self.k_means.k)
+        self.k_means.kmeans()
+        self.assertEqual(self.k, self.k_means.k)
         self.assertEqual(self.k, len(self.k_means.clusters))
         self.assertEqual(self.k, len(self.k_means.centroids))
 
