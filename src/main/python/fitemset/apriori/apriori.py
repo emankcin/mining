@@ -18,6 +18,7 @@ def get_frequent_one_itemsets(dataset, max_items, min_sup):
             counts.pop((i,))
     return counts
 
+
 def itemsets_self_join(dic):
     k_result = {}
     counter = 0
@@ -36,6 +37,7 @@ def itemsets_self_join(dic):
                 k_result[counter] = joined
                 counter += 1
     return k_result
+
 
 def get_frequent_n_itemsets(dataset, current_dic, min_sup):
     k_counts = {}
@@ -56,12 +58,14 @@ def get_frequent_n_itemsets(dataset, current_dic, min_sup):
             result[tuple(current_dic[i])] = k_counts[tuple(current_dic[i])]
     return result
 
+
 def construct_hash_tree(dic):
     k = len(dic.values()[0])
     ht = HashTree(k, 0)
     for i in dic.values():
         ht.insert(tuple(i))
     return ht
+
 
 def get_f_n_itemsets_w_hashtree(dataset, hash_tree, min_sup):
     result_dic = {}
@@ -80,7 +84,6 @@ def get_f_n_itemsets_w_hashtree(dataset, hash_tree, min_sup):
 
 
 def apriori(dataset, max_items, min_sup, with_hash_tree=True):
-
     result = {}
 
     k_result = get_frequent_one_itemsets(dataset, max_items, min_sup)

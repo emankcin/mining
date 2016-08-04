@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 from pandas import DataFrame
-from scipy.spatial.distance import euclidean
 
 # dimensionality of dataset
 DIM = 2
@@ -14,13 +12,16 @@ EPS = 0.01
 # size of figure: (width, height) in inches
 FIG_SIZE = (25, 10)
 
+
 # euclidean distance
 def _dist(x, y):
-    return euclidean(x, y)
+    p = np.array(x) - np.array(y)
+    return np.sqrt(np.sum(p * p))
+
 
 class KMeans:
-
     """Construct K_Means object from two-dimensional dataset of type DataFrame"""
+
     def __init__(self, dataset, k=4):
         self._dataset = dataset
         self._min_values = [min(self._dataset[i]) for i in range(DIM)]
@@ -29,6 +30,7 @@ class KMeans:
         self.reinitialize(k)
 
     """Update object using new value for k"""
+
     def reinitialize(self, k=4):
         self._k = k
         self._clusters = [[] for i in range(k)]
@@ -37,16 +39,17 @@ class KMeans:
     @property
     def k(self):
         return self._k
-    
+
     @property
     def centroids(self):
         return self._centroids
-    
+
     @property
     def clusters(self):
         return self._clusters
-    
+
     """Compute centroids of k clusters"""
+
     def kmeans(self, visualizeSteps=False):
         while True:
             if visualizeSteps:
@@ -84,12 +87,12 @@ class KMeans:
     # plot annotated centroids
     def _plot_centroids(self, ax):
         # plot centroids
-        bx = DataFrame(np.array(self._centroids)).plot(ax = ax, kind="scatter", x=0, y=1, figsize=FIG_SIZE, color="red")
+        bx = DataFrame(np.array(self._centroids)).plot(ax=ax, kind="scatter", x=0, y=1, figsize=FIG_SIZE, color="red")
         # annotate centroids
         for i in range(self._k):
-            (x,y) = tuple(self._centroids[i])
-            (offset_x, offset_y) = tuple(np.array(self._dim_lengths)/float(100))
-            bx.annotate(u'µ_'+str(i+1), xy=(x,y), xytext=(x+offset_x,y+offset_y))
+            (x, y) = tuple(self._centroids[i])
+            (offset_x, offset_y) = tuple(np.array(self._dim_lengths) / float(100))
+            bx.annotate(u'µ_' + str(i + 1), xy=(x, y), xytext=(x + offset_x, y + offset_y))
 
     # compute new centroids of clusters and return True if centroids have changed
     def _update_centroids(self):
@@ -97,7 +100,7 @@ class KMeans:
         for i in range(len(self._clusters)):
             if not self._clusters[i]:
                 self._centroids[i] = self._generate_point()
-                stable_result = False        
+                stable_result = False
             else:
                 if stable_result:
                     for j in range(DIM):

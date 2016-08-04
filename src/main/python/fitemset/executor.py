@@ -1,4 +1,4 @@
-import pandas as pd
+from pandas import read_csv
 
 from apriori.apriori import apriori
 
@@ -11,28 +11,27 @@ def convert_receipts(raw_dataset):
         dataset.append(tmp)
     return dataset
 
+
 def load_receipts_csv(path):
-    raw_dataset = pd.read_csv(path, "r", header=None)[0]
+    raw_dataset = read_csv(path, "r", header=None)[0]
     dataset = convert_receipts(raw_dataset)
     return dataset
+
 
 def main():
     receipts = "../../resources/receipts.csv"
     description = "../../resources/item_description.csv"
 
-    #    if sys.argv[1]:
-    #       receipts = sys.argv[1]
-    #  if sys.argv[2]:
-    #     description = sys.argv[2]
-
     dataset = load_receipts_csv(receipts)
-    dataset = dataset[:30]
+    dataset = dataset[:500]
+    print dataset
 
-    item_description = pd.read_csv(description, "r", header=None, delimiter=",", index_col=0, skiprows=1)
+    item_description = read_csv(description, "r", header=None, delimiter=",", index_col=0, skiprows=1)
 
     maxItems = len(item_description.index)
-    min_sup = 3
-    apriori(dataset, maxItems, min_sup, with_hash_tree=False)
+    min_sup = 5
+    apriori(dataset, maxItems, min_sup, with_hash_tree=True)
+
 
 if __name__ == "__main__":
     main()

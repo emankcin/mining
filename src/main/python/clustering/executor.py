@@ -1,7 +1,6 @@
-import sys
 from pandas import read_csv
-from kmeans import KMeans
 
+from kmeans import KMeans
 
 CSV_PATH = "src/main/resources/2d-sample.csv"#sys.argv[1]
 CSV_COLUMN_DELIMITER = ","
@@ -26,6 +25,7 @@ def main():
         handler.reinitialize(k=k)
         handler.kmeans()
         k += 1
+
 
 if __name__ == "__main__":
     main()

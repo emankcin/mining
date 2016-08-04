@@ -47,8 +47,10 @@ class AprioriTest(unittest.TestCase):
                          itemsets_self_join([[1, 2, 3], [6, 7, 8], [1, 2, 4], [1, 2, 5]]).values())
 
     def test_get_frequent_n_itemsets(self):
+        current_dictionary = {0: (1, 2), 1: (1, 3), 2: (2, 3)}
+        min_sup = 4
         self.assertEqual([(1, 2), (1, 3), (2, 3)],
-                         get_frequent_n_itemsets(self.dataset, {0: (1, 2), 1: (1, 3), 2: (2, 3)}, 4).keys())
+                         get_frequent_n_itemsets(self.dataset, current_dictionary, min_sup).keys())
 
     def test_construct_hash_tree(self):
         ht = construct_hash_tree({0: (1, 2), 1: (2, 3)})
@@ -56,7 +58,6 @@ class AprioriTest(unittest.TestCase):
         self.assertFalse(ht.contains((1, 3)))
 
     def test_get_f_n_itemsets_w_hashtree(self):
-        self.assertEqual({(1, 2): 4, (2, 3): 4, (1, 3): 4}, get_f_n_itemsets_w_hashtree(self.dataset,
-                                                                                        construct_hash_tree(
-                                                                                            {0: (1, 2), 1: (1, 3),
-                                                                                             2: (2, 3)}), 4))
+        ht = construct_hash_tree({0: (1, 2), 1: (1, 3), 2: (2, 3)})
+        min_sup = 4
+        self.assertEqual({(1, 2): 4, (2, 3): 4, (1, 3): 4}, get_f_n_itemsets_w_hashtree(self.dataset, ht, min_sup))
