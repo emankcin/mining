@@ -23,14 +23,25 @@ def main():
     description = "../../resources/item_description.csv"
 
     dataset = load_receipts_csv(receipts)
-    dataset = dataset[:500]
-    print dataset
+    dataset = dataset[:5000]
 
     item_description = read_csv(description, "r", header=None, delimiter=",", index_col=0, skiprows=1)
 
     maxItems = len(item_description.index)
     min_sup = 5
+
+    import time
+    t1 = time.time()
+    apriori(dataset, maxItems, min_sup, with_hash_tree=False)
+    t1 = time.time() - t1
+    # print "without hash tree: ", t
+
+    t2 = time.time()
     apriori(dataset, maxItems, min_sup, with_hash_tree=True)
+    t2 = time.time() - t2
+    # print "with hash tree: ", t
+    print "comparison of apriori algorithm variants:"
+    print "hash tree variant needed ", (t2 / t1) * 100, "% of the time of the variant without a hash tree."
 
 
 if __name__ == "__main__":

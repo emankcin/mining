@@ -92,6 +92,7 @@ def apriori(dataset, max_items, min_sup, with_hash_tree=True):
 
     while True:
         k_result = itemsets_self_join(k_result)
+
         if k_result == {}:
             break
         if (with_hash_tree):
