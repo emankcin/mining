@@ -1,5 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+"""
+.. module:: kmeans
+   :synopsis: A module for the kmeans algorithm
+
+.. moduleauthor:: Johannes Knaut <joknaut@gmx.net>
+
+
+"""
+
 import matplotlib.pyplot as plt
 import numpy as np
 from pandas import DataFrame
