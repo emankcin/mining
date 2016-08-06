@@ -23,7 +23,6 @@ def generate_docs(project, logger):
 def initialize(project):
     project.build_depends_on('mockito')
     project.build_depends_on('numpy')
-    project.build_depends_on('scipy')
     project.build_depends_on('matplotlib')
     project.build_depends_on('pandas')
 

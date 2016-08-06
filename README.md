@@ -7,10 +7,15 @@ Modules:
     - apriori
 
 Commands after cloning:
-virtualenv venv
-source venv/bin/activate
-pyb install_dependencies
-pyb docs
+```sh
+$ virtualenv venv
+$ source venv/bin/activate
+$ pip install pybuilder
+$ pyb install_dependencies
+$ pyb docs
+```
 
 Command to get out of virtual environment:
-deactivate
+```sh
+$ deactivate
+```
