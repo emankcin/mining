@@ -1,6 +1,6 @@
 import unittest
 
-from fitemset.apriori.hash_tree import HashTree
+from kdd.fitemset.apriori.hash_tree import HashTree
 
 
 class HashTreeTest(unittest.TestCase):

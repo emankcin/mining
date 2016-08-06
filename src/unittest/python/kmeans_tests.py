@@ -1,7 +1,7 @@
 import pandas as pd
 import unittest
 
-from clustering.kmeans import KMeans, _dist
+from kdd.clustering.kmeans import KMeans, _dist
 
 
 class KMeansTest(unittest.TestCase):

@@ -1,20 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-"""
-.. module:: kmeans
-   :synopsis: A module for the kmeans algorithm
-
-.. moduleauthor:: Johannes Knaut <joknaut@gmx.net>
-
-
-"""
-
 import matplotlib.pyplot as plt
 import numpy as np
 from pandas import DataFrame
 
-# dimensionality of dataset
+# dimensionality of data set
 DIM = 2
 # µ_1 == µ_2 <=> dist(µ_1, µ_2) < EPS
 EPS = 0.01
@@ -30,9 +20,10 @@ def _dist(x, y):
 
 
 class KMeans:
-    """Construct K_Means object from two-dimensional dataset of type DataFrame"""
+    """Administration of k-means algorithm"""
 
     def __init__(self, dataset, k=4):
+        """Construct KMeans object from two-dimensional data set of type DataFrame"""
         self._dataset = dataset
         self._min_values = [min(self._dataset[i]) for i in range(DIM)]
         self._max_values = [max(self._dataset[i]) for i in range(DIM)]
@@ -42,25 +33,32 @@ class KMeans:
     """Update object using new value for k"""
 
     def reinitialize(self, k=4):
+        """Reinitialize object with a new value of k"""
         self._k = k
         self._clusters = [[] for i in range(k)]
         self._centroids = [self._generate_point() for i in range(k)]
 
     @property
     def k(self):
+        """Get k-means parameter k"""
         return self._k
 
     @property
     def centroids(self):
+        """Get the k centroids of the k clusters"""
         return self._centroids
 
     @property
     def clusters(self):
+        """Get the k clusters"""
         return self._clusters
 
-    """Compute centroids of k clusters"""
 
     def kmeans(self, visualizeSteps=False):
+        """Find k centroids of clusters in the data set and visualize the result.
+
+        :param visualizeSteps (bool): flag for visualization of each iteration result
+        """
         while True:
             if visualizeSteps:
                 self._visualize_step()

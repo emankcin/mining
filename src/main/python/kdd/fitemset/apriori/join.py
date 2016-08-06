@@ -1,5 +1,3 @@
-# join([1,2,3], [1,2,4]) = [1,2,3,4]
-# join([1,8,9], [1,5,6]) = []
 def join(set1, set2):
     def equal_length(s1, s2):
         return len(s1) == len(s2)

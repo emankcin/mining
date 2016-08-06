@@ -4,7 +4,7 @@ from hash_tree import HashTree
 from join import join
 
 
-def get_frequent_one_itemsets(dataset, max_items, min_sup):
+def _get_frequent_one_itemsets(dataset, max_items, min_sup):
     counts = {}
     for i in range(max_items):
         counts[(i,)] = 0
@@ -19,7 +19,7 @@ def get_frequent_one_itemsets(dataset, max_items, min_sup):
     return counts
 
 
-def itemsets_self_join(dic):
+def _itemsets_self_join(dic):
     k_result = {}
     counter = 0
     ci = 0
@@ -39,7 +39,7 @@ def itemsets_self_join(dic):
     return k_result
 
 
-def get_frequent_n_itemsets(dataset, current_dic, min_sup):
+def _get_frequent_n_itemsets(dataset, current_dic, min_sup):
     k_counts = {}
     for row in dataset:
         row = [int(float(i)) for i in row]
@@ -59,7 +59,7 @@ def get_frequent_n_itemsets(dataset, current_dic, min_sup):
     return result
 
 
-def construct_hash_tree(dic):
+def _construct_hash_tree(dic):
     k = len(dic.values()[0])
     ht = HashTree(k, 0)
     for i in dic.values():
@@ -67,7 +67,7 @@ def construct_hash_tree(dic):
     return ht
 
 
-def get_f_n_itemsets_w_hashtree(dataset, hash_tree, min_sup):
+def _get_f_n_itemsets_w_hashtree(dataset, hash_tree, min_sup):
     result_dic = {}
     for ta in dataset:
         ta = [int(float(i)) for i in ta]
@@ -84,22 +84,29 @@ def get_f_n_itemsets_w_hashtree(dataset, hash_tree, min_sup):
 
 
 def apriori(dataset, max_items, min_sup, with_hash_tree=True):
+    """The apriori algorithm for retrieving frequent item sets.
+
+    :param dataset: A list of integer-lists (integers usually represent the keys of the items)
+    :param max_items: maximum number of different items
+    :param min_sup: minimum support, i.e. minimum number of items for them to be considered frequent
+    :param with_hash_tree (bool): True is default and means that the hash tree variant is used. False uses simple variant.
+    """
     result = {}
 
-    k_result = get_frequent_one_itemsets(dataset, max_items, min_sup)
+    k_result = _get_frequent_one_itemsets(dataset, max_items, min_sup)
 
     result.update(k_result)
 
     while True:
-        k_result = itemsets_self_join(k_result)
+        k_result = _itemsets_self_join(k_result)
 
         if k_result == {}:
             break
         if (with_hash_tree):
-            hash_tree = construct_hash_tree(k_result)
-            k_result = get_f_n_itemsets_w_hashtree(dataset, hash_tree, min_sup)
+            hash_tree = _construct_hash_tree(k_result)
+            k_result = _get_f_n_itemsets_w_hashtree(dataset, hash_tree, min_sup)
         else:
-            k_result = get_frequent_n_itemsets(dataset, k_result, min_sup)
+            k_result = _get_frequent_n_itemsets(dataset, k_result, min_sup)
         if k_result == {}:
             break
         else:

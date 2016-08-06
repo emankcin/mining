@@ -1,6 +1,6 @@
 import unittest
 
-from fitemset.apriori.join import join
+from kdd.fitemset.apriori.join import join
 
 
 class JoinTestCase(unittest.TestCase):
