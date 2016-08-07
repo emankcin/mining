@@ -1,0 +1,17 @@
+*.xlsx
+*.csv
+*.pyc
+
+*.coverage
+src/main/resources
+target
+venv
+*.idea
+*~
+
+docs/*
+docs/source/*
+!docs/source/index.rst
+!docs/source/conf.py
+!docs/Makefile
+!docs/make.bat
