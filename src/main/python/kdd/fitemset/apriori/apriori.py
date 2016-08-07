@@ -84,7 +84,8 @@ def _get_f_n_itemsets_w_hashtree(dataset, hash_tree, min_sup):
 
 
 def apriori(dataset, max_items, min_sup, with_hash_tree=True):
-    """The apriori algorithm for retrieving frequent item sets.
+    """
+    The apriori algorithm for retrieving frequent item sets.
 
     :param dataset: A list of integer-lists (integers usually represent the keys of the items)
     :param max_items: maximum number of different items

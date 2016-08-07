@@ -20,42 +20,53 @@ def _dist(x, y):
 
 
 class KMeans:
-    """Administration of k-means algorithm"""
+    """
+    Administration of k-means algorithm
+    """
 
     def __init__(self, dataset, k=4):
-        """Construct KMeans object from two-dimensional data set of type DataFrame"""
+        """
+        Construct KMeans object from two-dimensional data set of type DataFrame
+        """
         self._dataset = dataset
         self._min_values = [min(self._dataset[i]) for i in range(DIM)]
         self._max_values = [max(self._dataset[i]) for i in range(DIM)]
         self._dim_lengths = [abs(self._max_values[i] - self._min_values[i]) for i in range(DIM)]
         self.reinitialize(k)
 
-    """Update object using new value for k"""
-
     def reinitialize(self, k=4):
-        """Reinitialize object with a new value of k"""
+        """
+        Reinitialize object with a new value of k
+        """
         self._k = k
         self._clusters = [[] for i in range(k)]
         self._centroids = [self._generate_point() for i in range(k)]
 
     @property
     def k(self):
-        """Get k-means parameter k"""
+        """
+        Get k-means parameter k
+        """
         return self._k
 
     @property
     def centroids(self):
-        """Get the k centroids of the k clusters"""
+        """
+        Get the k centroids of the k clusters
+        """
         return self._centroids
 
     @property
     def clusters(self):
-        """Get the k clusters"""
+        """
+        Get the k clusters
+        """
         return self._clusters
 
 
     def kmeans(self, visualizeSteps=False):
-        """Find k centroids of clusters in the data set and visualize the result.
+        """
+        Find k centroids of clusters in the data set and visualize the result.
 
         :param visualizeSteps (bool): flag for visualization of each iteration result
         """

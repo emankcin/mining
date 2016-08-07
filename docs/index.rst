@@ -2,11 +2,16 @@ Welcome to mining's documentation!
 ==================================
 
 Contents:
-	    
+
 .. toctree::
    :maxdepth: 5
-   modules
-  
+
+   modules.rst
+   clustering.rst
+   fitemset.rst
+   fitemset.apriori.rst
+   fitemset.fptree.rst
+   
 Indices and tables
 ==================
 			  
