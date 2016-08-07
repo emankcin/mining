@@ -1,7 +1,7 @@
 
 def join(list1, list2):
     """
-    Join two integer lists. The join of two lists is the equal prefix of the two lists with both last elements appended in order.
+    Join two integer lists. The join of two lists is the equal prefix of the two lists with both last elements sorted and appended.
 
     :param list1:  list of integers
 

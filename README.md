@@ -8,8 +8,9 @@ Modules:
 
 Commands after cloning:
 ```sh
+$ cd mining
 $ virtualenv venv
-$ source venv/bin/activate
+$ . venv/bin/activate
 $ pip install pybuilder
 $ pyb install_dependencies
 $ pyb docs
