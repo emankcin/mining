@@ -1,11 +1,32 @@
+
 def join(list1, list2):
     """
-    Join two integer lists.
+    Join two integer lists. The join of two lists is the equal prefix of the two lists with both last elements appended in order.
 
-    :param list1: (List[int]) list of integers
-    :param list2: (List[int]) list of integers
+    :param list1:  list of integers
 
-    | Conditions for list1 and list2 to be joined, demonstrated in an example:
+    :param list2:  list of integers
+
+    :rtype: list of integers
+
+    Examples:
+
+    >>> from kdd.fitemset.apriori.join import join
+    >>> join([1,2,3], [1,2,4])
+    [1, 2, 3, 4]
+    >>> join([1,2,3], [1,3,4])
+    []
+    >>> join([1,2,3], [1,1,4])
+    []
+    >>> join([1,2,3], [1,2,3])
+    []
+    >>> join([785, 43, 0], [785, 43, 1009])
+    [785, 43, 0, 1009]
+    >>> join([785, 43, 1009], [785, 43, 0])
+    [785, 43, 0, 1009]
+
+    Conditions for list1 and list2 to be joined:
+
     >>> list1 = [1,2,3]
     >>> list2 = [1,2,4]
     >>> len(list1) == len(list2)
@@ -17,20 +38,6 @@ def join(list1, list2):
     >>> not list1[-1] == list2[-1]
     True
 
-    Returns:
-        The Join of the two lists, if join is possible, otherwise the empty list.
-
-    Examples:
-        >>> join([1,2,3], [1,2,4])
-        [1,2,4]
-        >>> join([1,2,3], [1,3,4])
-        []
-        >>> join([1,2,3], [1,1,4])
-        []
-        >>> join([785, 43, 0], [785, 43, 1009])
-        [785, 43, 0, 1009]
-        >>> join([785, 42, 1009], [785, 43, 0])
-        [785, 43, 0, 1009]
     """
     
     def equal_length(s1, s2):
