@@ -90,7 +90,8 @@ def apriori(dataset, max_items, min_sup, with_hash_tree=True):
     :param dataset: A list of integer-lists (integers usually represent the keys of the items)
     :param max_items: maximum number of different items
     :param min_sup: minimum support, i.e. minimum number of items for them to be considered frequent
-    :param with_hash_tree (bool): True is default and means that the hash tree variant is used. False uses simple variant.
+    :param with_hash_tree: True is default and means that the hash tree variant is used. False uses simple variant.
+    :type with_hash_tree: bool.
     """
     result = {}
 
