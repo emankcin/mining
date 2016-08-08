@@ -7,6 +7,7 @@ use_plugin("python.coverage")
 use_plugin("python.install_dependencies")
 use_plugin("python.distutils")
 use_plugin("python.pycharm")
+use_plugin("python.sphinx")
 
 default_task = "publish"
 
