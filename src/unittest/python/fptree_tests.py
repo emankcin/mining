@@ -25,7 +25,7 @@ class FPTreeTest(FItemsetTestBase):
         rearranged_data_set = [[1], [2],
                                [1, 2], [1, 3], [1, 4], [4, 3],
                                [1, 4, 2], [1, 4, 3]]
-        fpt = _generate_frequent_pattern_tree(self, rearranged_data_set)
+        fpt = _generate_frequent_pattern_tree(rearranged_data_set)
         for item_list in rearranged_data_set:
             for item in item_list:
                 self.assertTrue(fpt.contains(item))

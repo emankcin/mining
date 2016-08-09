@@ -15,7 +15,8 @@ class FrequentPatternTree():
             if not first_item in self.children:
                 self.children[first_item] = FrequentPatternTree(first_item, prefix)
             self.count += 1
-            next_prefix = self.prefix + first_item
+            next_prefix = self.prefix[:]
+            next_prefix.append(first_item)
             self.children[first_item].insert(item_list[1:], next_prefix)
 
     def contains(self, item):
