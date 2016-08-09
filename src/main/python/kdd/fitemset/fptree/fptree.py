@@ -1,3 +1,5 @@
+import numpy as np
+
 class FrequentPatternTree():
     def __init__(self, value, prefix):
         self.value = value
@@ -38,10 +40,35 @@ class FrequentPatternTree():
         return nodes
 
 def _get_desc_list_of_frequent_one_items(data_set, min_sup):
-    return []
+    items = {}
+    for item_list in data_set:
+        for item in item_list:
+            if item in items:
+                items[item] += 1
+            else:
+                items[item] = 1
+    frequent_items = {k: v for k, v in items.iteritems() if v >= min_sup}
+    desc_sorted_frequent_items = sorted(frequent_items, key=frequent_items.get, reverse=True)
+
+    return desc_sorted_frequent_items
 
 def _rearrange_data_set_according_to_one_items(data_set, desc_list):
-    return []
+    rearranged = []
+
+    for item_list in data_set:
+
+        tmp = [i for i in item_list if i in desc_list]
+        np_tmp = np.array(tmp)
+
+        tmp_desc = [i for i in desc_list if i in tmp]
+        np_tmp_desc = np.array(tmp_desc)
+
+        ind = np_tmp_desc.argsort()
+        desc_count_sorted_list = np_tmp[ind].tolist()
+
+        rearranged.append(desc_count_sorted_list)
+
+    return rearranged
 
 def _generate_frequent_pattern_tree(data_set):
     fpt = FrequentPatternTree(-1, [])

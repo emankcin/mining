@@ -51,3 +51,4 @@ class FPTreeTest(FItemsetTestBase):
         for i in [1,2,4]:
             for node in header_table[i]:
                 self.assertNotEqual(node.value, value)
+
