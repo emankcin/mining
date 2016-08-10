@@ -4,18 +4,32 @@ from hash_tree import HashTree
 from join import join
 
 
-def _get_frequent_one_itemsets(dataset, max_items, min_sup):
-    counts = {}
-    for i in range(max_items):
-        counts[(i,)] = 0
-    # scan dataset to count single item occurrences
-    for row in dataset:
-        for col in row:
-            key = int(float(col))
+def get_singleton_frequent_item_sets(data_set, max_items, min_sup):
+    """
+    Example:
+
+    >>> data_set = [['0', '1', '2'], ['0', '1', '3']]
+    >>> max_items = 4
+    >>> min_sup = 2
+    >>> from kdd.fitemset.apriori.apriori import get_singleton_frequent_item_sets
+    >>> get_singleton_frequent_item_sets(data_set, max_items, min_sup)
+    {(0,): 2, (1,): 2}
+    """
+
+    # initialize counts
+    counts = {(key,): 0 for key in range(max_items)}
+
+    # scan data_set to count singleton item occurrences
+    for item_list in data_set:
+        for item in item_list:
+            key = int(float(item))
             counts[(key,)] += 1
-    for i in range(len(counts)):
-        if counts[(i,)] < min_sup:
-            counts.pop((i,))
+
+    # filter out non-frequent items
+    for key in counts.copy():
+        if counts[key] < min_sup:
+            counts.pop(key)
+
     return counts
 
 
@@ -60,7 +74,10 @@ def _get_frequent_n_itemsets(dataset, current_dic, min_sup):
 
 
 def _construct_hash_tree(dic):
-    k = len(dic.values()[0])
+    if len(dic.values()) > 0:
+        k = len(dic.values()[0])
+    else:
+        k = 0
     ht = HashTree(k, 0)
     for i in dic.values():
         ht.insert(tuple(i))
@@ -95,7 +112,7 @@ def apriori(dataset, max_items, min_sup, with_hash_tree=True):
     """
     result = {}
 
-    k_result = _get_frequent_one_itemsets(dataset, max_items, min_sup)
+    k_result = get_singleton_frequent_item_sets(dataset, max_items, min_sup)
 
     result.update(k_result)
 

@@ -1,4 +1,4 @@
-from kdd.fitemset.apriori.apriori import _get_frequent_one_itemsets, apriori, \
+from kdd.fitemset.apriori.apriori import get_singleton_frequent_item_sets, apriori, \
     _get_frequent_n_itemsets, _itemsets_self_join, _construct_hash_tree, _get_f_n_itemsets_w_hashtree
 from fitemset_testbase import FItemsetTestBase
 
@@ -6,12 +6,12 @@ from fitemset_testbase import FItemsetTestBase
 class AprioriTest(FItemsetTestBase):
 
     def test_get_frequent_one_itemsets(self):
-        self.assertEqual({(2,): 6, (0,): 4, (3,): 7, (1,): 6}, _get_frequent_one_itemsets(self.dataset, self.n, 3))
-        self.assertEqual({(2,): 6, (0,): 4, (3,): 7, (1,): 6}, _get_frequent_one_itemsets(self.dataset, self.n, 4))
-        self.assertEqual({(2,): 6, (3,): 7, (1,): 6}, _get_frequent_one_itemsets(self.dataset, self.n, 5))
-        self.assertEqual({(2,): 6, (3,): 7, (1,): 6}, _get_frequent_one_itemsets(self.dataset, self.n, 6))
-        self.assertEqual({(3,): 7}, _get_frequent_one_itemsets(self.dataset, self.n, 7))
-        self.assertEqual({}, _get_frequent_one_itemsets(self.dataset, self.n, 8))
+        self.assertEqual({(2,): 6, (0,): 4, (3,): 7, (1,): 6}, get_singleton_frequent_item_sets(self.dataset, self.n, 3))
+        self.assertEqual({(2,): 6, (0,): 4, (3,): 7, (1,): 6}, get_singleton_frequent_item_sets(self.dataset, self.n, 4))
+        self.assertEqual({(2,): 6, (3,): 7, (1,): 6}, get_singleton_frequent_item_sets(self.dataset, self.n, 5))
+        self.assertEqual({(2,): 6, (3,): 7, (1,): 6}, get_singleton_frequent_item_sets(self.dataset, self.n, 6))
+        self.assertEqual({(3,): 7}, get_singleton_frequent_item_sets(self.dataset, self.n, 7))
+        self.assertEqual({}, get_singleton_frequent_item_sets(self.dataset, self.n, 8))
 
     def test_apriori_with_hash_tree(self):
         self.assertEqual(self.f_three_itemsets, apriori(self.dataset, self.n, 3, with_hash_tree=True))
