@@ -37,7 +37,7 @@ class FrequentPatternTree():
             nodes.append(self)
         else:
             for child in self.children:
-                self.get_all_nodes_with_values_helper(value, nodes)
+                nodes = self.children[child].get_all_nodes_with_values_helper(value, nodes)
         return nodes
 
 def _get_desc_list_of_frequent_one_items(data_set, min_sup):
@@ -77,10 +77,10 @@ def _generate_frequent_pattern_tree(data_set):
         fpt.insert(item_list, [])
     return fpt
 
-def _store_header_table_references(item_list, fp_tree):
-    header_table = {}
+def _construct_pattern_base(item_list, fp_tree):
+    pattern_base = {}
     for item in item_list:
         if fp_tree.contains(item):
-            header_table[item] = fp_tree.get_all_nodes_with_value(item)
-    return header_table
+            pattern_base[item] = fp_tree.get_all_nodes_with_value(item)
+    return pattern_base
 

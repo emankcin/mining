@@ -1,5 +1,5 @@
 from fitemset_testbase import FItemsetTestBase
-from kdd.fitemset.fptree.fptree import FrequentPatternTree, _get_desc_list_of_frequent_one_items, _rearrange_data_set_according_to_one_items, _generate_frequent_pattern_tree, _store_header_table_references
+from kdd.fitemset.fptree.fptree import FrequentPatternTree, _get_desc_list_of_frequent_one_items, _rearrange_data_set_according_to_one_items, _generate_frequent_pattern_tree, _construct_pattern_base
 
 class FPTreeTest(FItemsetTestBase):
 
@@ -38,17 +38,18 @@ class FPTreeTest(FItemsetTestBase):
             for item in item_list:
                 self.assertTrue(fpt.contains(item))
 
-    def test_store_header_table_references(self):
+    def test_construct_pattern_base(self):
         fpt = FrequentPatternTree(-1, [])
         min_sup = 3
         for item_list in self.data_set:
             fpt.insert(item_list, [])
         desc_list = _get_desc_list_of_frequent_one_items(self.data_set, min_sup)
-        header_table = _store_header_table_references(desc_list, fpt)
+        header_table = _construct_pattern_base(desc_list, fpt)
         value = 3
         for node in header_table[value]:
             self.assertEqual(node.value, value)
         for i in [1,2,4]:
-            for node in header_table[i]:
-                self.assertNotEqual(node.value, value)
+            if i in header_table:
+                for node in header_table[i]:
+                    self.assertNotEqual(node.value, value)
 
