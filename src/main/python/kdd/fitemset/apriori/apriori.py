@@ -8,10 +8,11 @@ def get_singleton_frequent_item_sets(data_set, max_items, min_sup):
     """
     Example:
 
+    >>> from kdd.fitemset.apriori.apriori import get_singleton_frequent_item_sets
+
     >>> data_set = [['0', '1', '2'], ['0', '1', '3']]
     >>> max_items = 4
     >>> min_sup = 2
-    >>> from kdd.fitemset.apriori.apriori import get_singleton_frequent_item_sets
     >>> get_singleton_frequent_item_sets(data_set, max_items, min_sup)
     {(0,): 2, (1,): 2}
     """
@@ -33,24 +34,31 @@ def get_singleton_frequent_item_sets(data_set, max_items, min_sup):
     return counts
 
 
-def _itemsets_self_join(dic):
-    k_result = {}
-    counter = 0
-    ci = 0
-    for i in dic:
-        ci += 1
-        cj = 0
-        for j in dic:
-            cj += 1
-            if ci >= cj:
-                continue
-            joined = join(list(i), list(j))
-            if not joined:
-                continue
-            else:
-                k_result[counter] = joined
-                counter += 1
-    return k_result
+def _item_lists_self_join(item_lists):
+    """
+    Example:
+
+    >>> from kdd.fitemset.apriori.apriori import _item_lists_self_join
+
+    >>> item_lists = [[1,2,3], [1,2,4], [1,3,5], [3,4,6], [3,4,8], [3,4,9]]
+    >>> _item_lists_self_join(item_lists)
+    [[1, 2, 3, 4], [3, 4, 6, 8], [3, 4, 6, 9], [3, 4, 8, 9]]
+    """
+
+    join_result = []
+
+    length = len(item_lists)
+
+    for i in range(length):
+
+        for j in range(i + 1, length):
+
+            joined = join(item_lists[i], item_lists[j])
+
+            if joined:
+                join_result.append(joined)
+
+    return join_result
 
 
 def _get_frequent_n_itemsets(dataset, current_dic, min_sup):
@@ -117,7 +125,9 @@ def apriori(dataset, max_items, min_sup, with_hash_tree=True):
     result.update(k_result)
 
     while True:
-        k_result = _itemsets_self_join(k_result)
+        k_result = [list(tup) for tup in k_result.keys()]
+        k_result = _item_lists_self_join(k_result)
+        k_result = dict(zip([i for i in range(len(k_result))], k_result))
 
         if k_result == {}:
             break
@@ -131,6 +141,6 @@ def apriori(dataset, max_items, min_sup, with_hash_tree=True):
         else:
             result.update(k_result)
 
-    print "result: "
-    print result
+    #print "result: "
+    #print result
     return result
