@@ -4,29 +4,39 @@ from hash_tree import HashTree
 from join import join
 
 
-def get_frequent_singleton_tuples(data_set, max_items, min_sup):
+def _retrieve_frequent_singleton_counts(item_lists, min_sup):
     """
+    Counts each item in a list of item lists. Non-frequent items are discarded.
+
+    :param item_lists: list of integer lists
+    :param min_sup: minimum support
+    :return: dictionary with frequent singletons and their counts
+    :rtype: Dict[Tuple[int], int]
+
     Example:
 
-    >>> from kdd.fitemset.apriori.apriori import get_frequent_singleton_tuples
+    >>> from kdd.fitemset.apriori.apriori import _retrieve_frequent_singleton_counts
 
     >>> data_set = [[0, 1, 2], [0, 1, 3]]
-    >>> max_items = 4
     >>> min_sup = 2
-    >>> get_frequent_singleton_tuples(data_set, max_items, min_sup)
+    >>> _retrieve_frequent_singleton_counts(data_set, min_sup)
     {(0,): 2, (1,): 2}
     """
 
-    # initialize counts
-    counts = {(key,): 0 for key in range(max_items)}
+    counts = {}
 
     # scan data_set to count singleton item occurrences
-    for item_list in data_set:
+    for item_list in item_lists:
         for item in item_list:
-            counts[(item,)] += 1
+            key = (item,)
+            if not key in counts:
+                counts[key] = 1
+            else:
+                counts[key] += 1
 
     # filter out non-frequent items
-    for key in counts.copy():
+    counts_copy = counts.copy()
+    for key in counts_copy:
         if counts[key] < min_sup:
             counts.pop(key)
 
@@ -119,7 +129,7 @@ def apriori(dataset, max_items, min_sup, with_hash_tree=True):
     """
     result = {}
 
-    k_result = get_frequent_singleton_tuples(dataset, max_items, min_sup)
+    k_result = _retrieve_frequent_singleton_counts(dataset, min_sup)
 
     result.update(k_result)
 
