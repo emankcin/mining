@@ -8,6 +8,7 @@ def convert_receipts(raw_dataset):
     for itemset in raw_dataset:
         tmp = itemset.split(',')
         tmp.pop(0)
+        tmp = [int(float(s)) for s in tmp]
         dataset.append(tmp)
     return dataset
 
@@ -19,11 +20,11 @@ def load_receipts_csv(path):
 
 
 def main():
-    receipts = "../../resources/receipts.csv"
-    description = "../../resources/item_description.csv"
+    receipts = "../../../resources/receipts.csv"
+    description = "../../../resources/item_description.csv"
 
     dataset = load_receipts_csv(receipts)
-    dataset = dataset[:5000]
+    dataset = dataset[:1000]
 
     item_description = read_csv(description, "r", header=None, delimiter=",", index_col=0, skiprows=1)
 

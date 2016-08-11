@@ -4,16 +4,16 @@ from hash_tree import HashTree
 from join import join
 
 
-def get_singleton_frequent_item_sets(data_set, max_items, min_sup):
+def get_frequent_singleton_tuples(data_set, max_items, min_sup):
     """
     Example:
 
-    >>> from kdd.fitemset.apriori.apriori import get_singleton_frequent_item_sets
+    >>> from kdd.fitemset.apriori.apriori import get_frequent_singleton_tuples
 
-    >>> data_set = [['0', '1', '2'], ['0', '1', '3']]
+    >>> data_set = [[0, 1, 2], [0, 1, 3]]
     >>> max_items = 4
     >>> min_sup = 2
-    >>> get_singleton_frequent_item_sets(data_set, max_items, min_sup)
+    >>> get_frequent_singleton_tuples(data_set, max_items, min_sup)
     {(0,): 2, (1,): 2}
     """
 
@@ -23,8 +23,7 @@ def get_singleton_frequent_item_sets(data_set, max_items, min_sup):
     # scan data_set to count singleton item occurrences
     for item_list in data_set:
         for item in item_list:
-            key = int(float(item))
-            counts[(key,)] += 1
+            counts[(item,)] += 1
 
     # filter out non-frequent items
     for key in counts.copy():
@@ -120,7 +119,7 @@ def apriori(dataset, max_items, min_sup, with_hash_tree=True):
     """
     result = {}
 
-    k_result = get_singleton_frequent_item_sets(dataset, max_items, min_sup)
+    k_result = get_frequent_singleton_tuples(dataset, max_items, min_sup)
 
     result.update(k_result)
 
