@@ -1,10 +1,11 @@
 import numpy as np
+from itertools import combinations
 
 class FrequentPatternTree():
     def __init__(self, value, prefix):
         self.value = value
         self.prefix = prefix
-        self.count = 0
+        self.count = 1
         self.children = {}
 
     def insert(self, item_list, prefix):
@@ -14,8 +15,9 @@ class FrequentPatternTree():
             first_item = item_list[0]
             if not first_item in self.children:
                 self.children[first_item] = FrequentPatternTree(first_item, prefix)
-            self.count += 1
-            next_prefix = self.prefix[:]
+            else:
+                self.children[first_item].count += 1
+            next_prefix = prefix[:]
             next_prefix.append(first_item)
             self.children[first_item].insert(item_list[1:], next_prefix)
 
@@ -39,6 +41,27 @@ class FrequentPatternTree():
             for child in self.children:
                 nodes = self.children[child].get_all_nodes_with_values_helper(value, nodes)
         return nodes
+
+    def has_single_path(self):
+        if len(self.children) > 1:
+            return False
+        elif len(self.children) == 0:
+            result = self.prefix[:]
+            result.append(self.value)
+            return result
+        else:
+            return self.children.values()[0].has_single_path()
+
+    def retrieve_frequent_item_sets(self):
+        result = []
+        path = self.has_single_path()
+        if not path:
+            return []
+        else:
+            for L in range(1, len(path) + 1):
+                result.extend(list(combinations(path, L)))
+        return result
+
 
 def _get_desc_list_of_frequent_one_items(data_set, min_sup):
     items = {}
@@ -84,3 +107,24 @@ def _construct_pattern_base(item_list, fp_tree):
             pattern_base[item] = fp_tree.get_all_nodes_with_value(item)
     return pattern_base
 
+def _convert_pattern_base_to_list_of_conditional_fp_trees(pattern_base):
+    result_list = []
+    for key in pattern_base:
+        cfpt = FrequentPatternTree(key, [])
+        tree_list = pattern_base[key]
+        for tree in tree_list:
+            for i in range(tree.count):
+                cfpt.insert(tree.prefix)
+        result_list.append(cfpt)
+    return result_list
+
+def _mine_fp_tree(fp_tree, desc_list):
+    result = []
+    pattern_base = _construct_pattern_base(desc_list, fp_tree)
+    list_of_trees = _convert_pattern_base_to_list_of_conditional_fp_trees(pattern_base)
+    for i in range(len(list_of_trees)):
+        if len(pattern_base[i]) > 2:
+            result.extend(_mine_fp_tree(list_of_trees[i], desc_list))
+        else:
+            result.extend(list_of_trees[i].retrieve_frequent_item_sets)
+    return result
