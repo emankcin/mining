@@ -70,23 +70,51 @@ def _item_lists_self_join(item_lists):
     return join_result
 
 
-def _get_frequent_n_itemsets(dataset, current_dic, min_sup):
+def _get_frequent_n_itemsets(data_set, n_item_lists, min_sup):
+    """
+    Example:
+
+    >>> from kdd.fitemset.apriori.apriori import _get_frequent_n_itemsets
+
+    >>> data_set = [[1,2,3,4,5], [2,3,4,5,6], [3,4,5,6,7]]
+    >>> n_item_lists = [[2,3], [3,4]]
+    >>> min_sup = 2
+    >>> _get_frequent_n_itemsets(data_set, n_item_lists, min_sup)
+    {(3, 4): 3, (2, 3): 2}
+    """
+
     k_counts = {}
-    for row in dataset:
-        row = [int(float(i)) for i in row]
-        for key in current_dic:
-            contained = set(current_dic[key]).issubset(set(row))
-            if not contained:
-                continue
-            else:
-                if not tuple(current_dic[key]) in k_counts:
-                    k_counts[tuple(current_dic[key])] = 1
+
+    # count how often each of the k n_item_lists is subset of a data row
+    for row in data_set:
+
+        for n_item_list in n_item_lists:
+
+            contained = set(n_item_list).issubset(set(row))
+
+            if contained:
+
+                n_item_tuple = tuple(n_item_list)
+
+                if not n_item_tuple in k_counts:
+
+                    k_counts[n_item_tuple] = 1
+
                 else:
-                    k_counts[tuple(current_dic[key])] += 1
+
+                    k_counts[n_item_tuple] += 1
+
     result = {}
-    for i in range(len(current_dic)):
-        if tuple(current_dic[i]) in k_counts and k_counts[tuple(current_dic[i])] >= min_sup:
-            result[tuple(current_dic[i])] = k_counts[tuple(current_dic[i])]
+
+    # only put frequent item lists into result
+    for n_item_list in n_item_lists:
+
+        n_item_tuple = tuple(n_item_list)
+
+        if n_item_tuple in k_counts and k_counts[n_item_tuple] >= min_sup:
+
+            result[n_item_tuple] = k_counts[n_item_tuple]
+
     return result
 
 
@@ -136,9 +164,9 @@ def apriori(dataset, max_items, min_sup, with_hash_tree=True):
     while True:
         k_result = [list(tup) for tup in k_result.keys()]
         k_result = _item_lists_self_join(k_result)
-        k_result = dict(zip([i for i in range(len(k_result))], k_result))
+        #k_result = dict(zip([i for i in range(len(k_result))], k_result))
 
-        if k_result == {}:
+        if k_result == []:
             break
         if (with_hash_tree):
             hash_tree = _construct_hash_tree(k_result)

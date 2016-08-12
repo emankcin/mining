@@ -32,10 +32,10 @@ class AprioriTest(FItemsetTestBase):
                          _item_lists_self_join([[1, 2, 3], [6, 7, 8], [1, 2, 4], [1, 2, 5]]))
 
     def test_get_frequent_n_itemsets(self):
-        current_dictionary = {0: (1, 2), 1: (1, 3), 2: (2, 3)}
+        current_list = [[1, 2], [1, 3], [2, 3]]
         min_sup = 4
         self.assertEqual([(1, 2), (1, 3), (2, 3)],
-                         _get_frequent_n_itemsets(self.dataset, current_dictionary, min_sup).keys())
+                         _get_frequent_n_itemsets(self.dataset, current_list, min_sup).keys())
 
     def test_construct_hash_tree(self):
         ht = _construct_hash_tree({0: (1, 2), 1: (2, 3)})
