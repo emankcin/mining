@@ -131,7 +131,8 @@ def _construct_hash_tree(item_lists):
     if len(item_lists) > 0:
         k = len(item_lists[0])
     else:
-        k = 0
+        # TODO: write a custom Exception
+        raise Exception
     ht = HashTree(k, 0)
     for item_list in item_lists:
         ht.insert(tuple(item_list))
