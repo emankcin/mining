@@ -1,5 +1,5 @@
 from fitemset_testbase import FItemsetTestBase
-from kdd.fitemset.fptree.fptree import FrequentPatternTree, _get_desc_list_of_frequent_one_items, _rearrange_data_set_according_to_one_items, _generate_frequent_pattern_tree, _construct_pattern_base
+from kdd.fitemset.fptree.fptree import FrequentPatternTree, _get_desc_list_of_frequent_one_items, _rearrange_data_set_according_to_one_items, _generate_frequent_pattern_tree, _construct_pattern_base, _convert_pattern_base_to_list_of_conditional_fp_trees, _mine_fp_tree
 
 class FPTreeTest(FItemsetTestBase):
 
@@ -102,6 +102,36 @@ class FPTreeTest(FItemsetTestBase):
         self.assertEqual([3, [1]], [pattern_base[4][0].count, pattern_base[4][0].prefix])
         self.assertEqual([1, []], [pattern_base[4][1].count, pattern_base[4][1].prefix])
 
-    #def test_convert_pattern_base_to_list_of_conditional_fp_trees(self):
-     #   self.assertTrue(False)
+    def test_convert_pattern_base_to_list_of_conditional_fp_trees(self):
+        min_sup = 3
+        rearranged_data_set = [[1], [2],
+                               [1, 2], [1, 3], [1, 4], [4, 3],
+                               [1, 4, 2], [1, 4, 3]]
+        fpt = _generate_frequent_pattern_tree(rearranged_data_set)
+        desc_list = _get_desc_list_of_frequent_one_items(self.data_set, min_sup)
+        pattern_base = _construct_pattern_base(desc_list, fpt)
 
+        list_of_cond_fp_trees = _convert_pattern_base_to_list_of_conditional_fp_trees(pattern_base)
+        for tree in list_of_cond_fp_trees:
+            print(tree.value)
+            print(tree.prefix)
+            print(tree.count)
+            print(tree.children)
+
+    def test_mine_fp_tree(self):
+        min_sup = 3
+        rearranged_data_set = [[1], [2],
+                               [1, 2], [1, 3], [1, 4], [4, 3],
+                               [1, 4, 2], [1, 4, 3]]
+        fpt = _generate_frequent_pattern_tree(rearranged_data_set)
+        desc_list = _get_desc_list_of_frequent_one_items(self.data_set, min_sup)
+        pattern_base = _construct_pattern_base(desc_list, fpt)
+
+        list_of_cond_fp_trees = _convert_pattern_base_to_list_of_conditional_fp_trees(pattern_base)
+        print(desc_list)
+        print(list_of_cond_fp_trees[1].value)
+        print(list_of_cond_fp_trees[1].prefix)
+        print(list_of_cond_fp_trees[1].count)
+        print(list_of_cond_fp_trees[1].children)
+        print(list_of_cond_fp_trees[1].children[1].count)
+        print(_mine_fp_tree(list_of_cond_fp_trees[1], desc_list))
