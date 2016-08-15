@@ -8,6 +8,12 @@ class FrequentPatternTree():
         self.count = 1
         self.children = {}
 
+    def __eq__(self, other):
+        return False
+
+    def __ne__(self, other):
+        return True
+
     def insert(self, item_list, prefix):
         if item_list == []:
             pass
@@ -110,12 +116,12 @@ def _construct_pattern_base(item_list, fp_tree):
 def _convert_pattern_base_to_list_of_conditional_fp_trees(pattern_base):
     result_list = []
     for key in pattern_base:
-        cfpt = FrequentPatternTree(key, [])
+        conditional_fpt = FrequentPatternTree(key, [])
         tree_list = pattern_base[key]
         for tree in tree_list:
             for i in range(tree.count):
-                cfpt.insert(tree.prefix, [])
-        result_list.append(cfpt)
+                conditional_fpt.insert(tree.prefix, [key])
+        result_list.append(conditional_fpt)
     return result_list
 
 def _mine_fp_tree(fp_tree, desc_list):

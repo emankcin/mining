@@ -5,8 +5,8 @@ class FPTreeTest(FItemsetTestBase):
 
     def setUp(self):
         self.data_set = [[1], [2],
-                   [1,2], [1,3], [1,4], [3,4],
-                   [1,2,4], [1,3,4]]
+                         [1,2], [1,3], [1,4], [3,4],
+                         [1,2,4], [1,3,4]]
 
     def test_get_desc_list_of_frequent_one_items(self):
         self.assertEqual([1,4,2,3], _get_desc_list_of_frequent_one_items(self.data_set, 3))
@@ -112,11 +112,41 @@ class FPTreeTest(FItemsetTestBase):
         pattern_base = _construct_pattern_base(desc_list, fpt)
 
         list_of_cond_fp_trees = _convert_pattern_base_to_list_of_conditional_fp_trees(pattern_base)
-        for tree in list_of_cond_fp_trees:
-            print(tree.value)
-            print(tree.prefix)
-            print(tree.count)
-            print(tree.children)
+
+
+        fpt_1 = list_of_cond_fp_trees[0]
+        # [value, prefix, count, children]
+        fpt_1_expected = [1, [], 1, {}]
+        self.assertEqual(fpt_1_expected, [fpt_1.value, fpt_1.prefix, fpt_1.count, fpt_1.children])
+
+        fpt_2 = list_of_cond_fp_trees[1]
+        # [value, prefix, count]
+        fpt_2_expected = [2, [], 1]
+        self.assertEqual(fpt_2_expected, [fpt_2.value, fpt_2.prefix, fpt_2.count])
+        fpt_2_1 = fpt_2.children[1]
+        fpt_2_1_expected = [1, [2], 2]
+        self.assertEqual(fpt_2_1_expected, [fpt_2_1.value, fpt_2_1.prefix, fpt_2_1.count])
+        fpt_2_1_4 = fpt_2_1.children[4]
+        fpt_2_1_4_expected = [4, [2, 1], 1]
+        self.assertEqual(fpt_2_1_4_expected, [fpt_2_1_4.value, fpt_2_1_4.prefix, fpt_2_1_4.count])
+
+        fpt_3 = list_of_cond_fp_trees[2]
+        fpt_3_expected = [3, [], 1]
+        self.assertEqual(fpt_3_expected, [fpt_3.value, fpt_3.prefix, fpt_3.count])
+        fpt_3_1 = fpt_3.children[1]
+        fpt_3_1_expected = [1, [3], 2]
+        self.assertEqual(fpt_3_1_expected, [fpt_3_1.value, fpt_3_1.prefix, fpt_3_1.count])
+        fpt_3_4 = fpt_3.children[4]
+        fpt_3_4_expected = [4, [3], 1]
+        self.assertEqual(fpt_3_4_expected, [fpt_3_4.value, fpt_3_4.prefix, fpt_3_4.count])
+
+        fpt_4 = list_of_cond_fp_trees[3]
+        fpt_4_expected = [4, [], 1]
+        self.assertEqual(fpt_4_expected, [fpt_4.value, fpt_4.prefix, fpt_4.count])
+        fpt_4_1 = fpt_4.children[1]
+        fpt_4_1_expected = [1, [4], 3]
+        self.assertEqual(fpt_4_1_expected, [fpt_4_1.value, fpt_4_1.prefix, fpt_4_1.count])
+
 
     def test_mine_fp_tree(self):
         min_sup = 3

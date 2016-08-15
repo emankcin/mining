@@ -33,14 +33,14 @@ def main():
 
     import time
     t1 = time.time()
-    apriori(dataset, maxItems, min_sup, with_hash_tree=False)
+    sets1 = apriori(dataset, min_sup, with_hash_tree=False)
     t1 = time.time() - t1
-    # print "without hash tree: ", t
+    print "without hash tree: ", sets1
 
     t2 = time.time()
-    apriori(dataset, maxItems, min_sup, with_hash_tree=True)
+    sets2 = apriori(dataset, min_sup, with_hash_tree=True)
     t2 = time.time() - t2
-    # print "with hash tree: ", t
+    print "with hash tree: ", sets2
     print "comparison of apriori algorithm variants:"
     print "hash tree variant needed ", (t2 / t1) * 100, "% of the time of the variant without a hash tree."
 
