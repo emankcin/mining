@@ -1,33 +1,29 @@
 from fitemset_testbase import FItemsetTestBase
-from kdd.fitemset.fptree.fptree import FrequentPatternTree, _get_desc_list_of_frequent_one_items, _rearrange_data_set_according_to_one_items, _generate_frequent_pattern_tree, _construct_pattern_base, _convert_pattern_base_to_list_of_conditional_fp_trees, _mine_fp_tree
-
+from kdd.fitemset.fptree.fptree import FrequentPatternTree, _get_desc_list_of_frequent_one_items, _rearrange_data_set_according_to_one_items, _generate_frequent_pattern_tree, _construct_pattern_base, _convert_pattern_base_to_list_of_conditional_fp_trees, _mine_fp_tree, retrieve
 class FPTreeTest(FItemsetTestBase):
 
     def setUp(self):
         self.data_set = [[1], [2],
                          [1,2], [1,3], [1,4], [3,4],
                          [1,2,4], [1,3,4]]
+        self.min_sup = 3
+        self.rearranged_data_set = [[1], [2],
+                                    [1, 2], [1, 3], [1, 4], [4, 3],
+                                    [1, 4, 2], [1, 4, 3]]
+        self.result = {(1,), (2,), (3,), (4,), (1, 4)}
 
     def test_get_desc_list_of_frequent_one_items(self):
-        self.assertEqual([1,4,2,3], _get_desc_list_of_frequent_one_items(self.data_set, 3))
+        self.assertEqual([1,4,2,3], _get_desc_list_of_frequent_one_items(self.data_set, self.min_sup))
         self.assertEqual([1,4], _get_desc_list_of_frequent_one_items(self.data_set, 4))
         self.assertEqual([], _get_desc_list_of_frequent_one_items(self.data_set, 10))
 
     def test_rearrange_data_set_according_to_one_items(self):
-        min_sup = 3
-        rearranged_data_set = [[1], [2],
-                               [1,2], [1,3], [1,4], [4,3],
-                               [1,4,2], [1,4,3]]
-        self.assertEqual(rearranged_data_set, _rearrange_data_set_according_to_one_items(self.data_set, [1,4,2,3]))
+        self.assertEqual(self.rearranged_data_set, _rearrange_data_set_according_to_one_items(self.data_set, [1, 4, 2, 3]))
 
     def test_generate_frequent_pattern_tree(self):
-        min_sup = 3
-        rearranged_data_set = [[1], [2],
-                               [1, 2], [1, 3], [1, 4], [4, 3],
-                               [1, 4, 2], [1, 4, 3]]
-        fpt = _generate_frequent_pattern_tree(rearranged_data_set)
+        fpt = _generate_frequent_pattern_tree(self.rearranged_data_set)
 
-        for item_list in rearranged_data_set:
+        for item_list in self.rearranged_data_set:
             for item in item_list:
                 self.assertTrue(fpt.contains(item))
 
@@ -80,15 +76,15 @@ class FPTreeTest(FItemsetTestBase):
             for item in item_list:
                 self.assertTrue(fpt.contains(item))
 
-    def test_construct_pattern_base(self):
-        min_sup = 3
-        rearranged_data_set = [[1], [2],
-                               [1, 2], [1, 3], [1, 4], [4, 3],
-                               [1, 4, 2], [1, 4, 3]]
-        fpt = _generate_frequent_pattern_tree(rearranged_data_set)
-        desc_list = _get_desc_list_of_frequent_one_items(self.data_set, min_sup)
+    def pattern_base_example_getter(self):
+        fpt = _generate_frequent_pattern_tree(self.rearranged_data_set)
+        desc_list = _get_desc_list_of_frequent_one_items(self.data_set, self.min_sup)
         pattern_base = _construct_pattern_base(desc_list, fpt)
 
+        return pattern_base
+
+    def test_construct_pattern_base(self):
+        pattern_base = self.pattern_base_example_getter()
         value = 3
         for node in pattern_base[value]:
             self.assertEqual(node.value, value)
@@ -102,14 +98,10 @@ class FPTreeTest(FItemsetTestBase):
         self.assertEqual([3, [1]], [pattern_base[4][0].count, pattern_base[4][0].prefix])
         self.assertEqual([1, []], [pattern_base[4][1].count, pattern_base[4][1].prefix])
 
+
+
     def test_convert_pattern_base_to_list_of_conditional_fp_trees(self):
-        min_sup = 3
-        rearranged_data_set = [[1], [2],
-                               [1, 2], [1, 3], [1, 4], [4, 3],
-                               [1, 4, 2], [1, 4, 3]]
-        fpt = _generate_frequent_pattern_tree(rearranged_data_set)
-        desc_list = _get_desc_list_of_frequent_one_items(self.data_set, min_sup)
-        pattern_base = _construct_pattern_base(desc_list, fpt)
+        pattern_base = self.pattern_base_example_getter()
 
         list_of_cond_fp_trees = _convert_pattern_base_to_list_of_conditional_fp_trees(pattern_base)
 
@@ -149,19 +141,28 @@ class FPTreeTest(FItemsetTestBase):
 
 
     def test_mine_fp_tree(self):
-        min_sup = 3
-        rearranged_data_set = [[1], [2],
-                               [1, 2], [1, 3], [1, 4], [4, 3],
-                               [1, 4, 2], [1, 4, 3]]
-        fpt = _generate_frequent_pattern_tree(rearranged_data_set)
-        desc_list = _get_desc_list_of_frequent_one_items(self.data_set, min_sup)
-        pattern_base = _construct_pattern_base(desc_list, fpt)
+        desc_list = _get_desc_list_of_frequent_one_items(self.data_set, self.min_sup)
+        pattern_base = self.pattern_base_example_getter()
 
         list_of_cond_fp_trees = _convert_pattern_base_to_list_of_conditional_fp_trees(pattern_base)
-        print(desc_list)
-        print(list_of_cond_fp_trees[1].value)
-        print(list_of_cond_fp_trees[1].prefix)
-        print(list_of_cond_fp_trees[1].count)
-        print(list_of_cond_fp_trees[1].children)
-        print(list_of_cond_fp_trees[1].children[1].count)
-        print(_mine_fp_tree(list_of_cond_fp_trees[1], desc_list))
+
+        actual_result_1 = set([i for i in _mine_fp_tree(list_of_cond_fp_trees[0], desc_list) if list(i) in self.rearranged_data_set or list(i).reverse() in self.rearranged_data_set])
+        self.assertEqual({(1,)}, actual_result_1)
+
+        actual_result_2 = set([i for i in _mine_fp_tree(list_of_cond_fp_trees[1], desc_list) if
+                               list(i) in self.rearranged_data_set or list(i).reverse() in self.rearranged_data_set])
+        self.assertEqual({(2,)}, actual_result_2)
+
+        actual_result_3 = set([i for i in _mine_fp_tree(list_of_cond_fp_trees[2], desc_list) if
+                           list(i) in self.rearranged_data_set or list(i).reverse() in self.rearranged_data_set])
+        self.assertEqual({(3,)}, actual_result_3)
+
+        actual_result_4 = set([i for i in _mine_fp_tree(list_of_cond_fp_trees[3], desc_list) if
+                           list(i) in self.rearranged_data_set or list(i).reverse() in self.rearranged_data_set])
+        self.assertEqual({(4,), (1,), (1,4)}, actual_result_4)
+
+    def test_retrieve(self):
+        expected_result = {[(1,), (2,), (4,)]}
+        min_sup = 4
+        self.assertEqual(expected_result, retrieve(self.data_set, min_sup))
+
