@@ -12,6 +12,20 @@ class FPTreeTest(FItemsetTestBase):
                                     [1, 4, 2], [1, 4, 3]]
         self.result = {(1,), (2,), (3,), (4,), (1, 4)}
 
+    def test_pattern_tree_equality(self):
+        fpt_1 = _generate_frequent_pattern_tree(self.rearranged_data_set)
+        fpt_2 = _generate_frequent_pattern_tree(self.rearranged_data_set)
+        fpt_3 = _generate_frequent_pattern_tree(self.data_set)
+        self.assertEqual(fpt_1, fpt_2)
+        self.assertEqual(fpt_2, fpt_1)
+        self.assertNotEqual(fpt_1, fpt_3)
+        self.assertNotEqual(fpt_3, fpt_1)
+        self.assertNotEqual(fpt_2, fpt_3)
+        self.assertNotEqual(fpt_3, fpt_2)
+        self.assertEqual(fpt_1, fpt_1)
+        self.assertEqual(fpt_2, fpt_2)
+        self.assertEqual(fpt_3, fpt_3)
+
     def test_get_desc_list_of_frequent_one_items(self):
         self.assertEqual([1,4,2,3], _get_desc_list_of_frequent_one_items(self.data_set, self.min_sup))
         self.assertEqual([1,4], _get_desc_list_of_frequent_one_items(self.data_set, 4))

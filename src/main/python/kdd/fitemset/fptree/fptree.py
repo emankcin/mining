@@ -9,10 +9,16 @@ class FrequentPatternTree():
         self.children = {}
 
     def __eq__(self, other):
-        return False
+        if self.value == other.value and self.prefix == other.prefix and self.count == other.count and len(self.children) == len(other.children):
+            for key in self.children:
+                if not key in other.children or not self.children[key].__eq__(other.children[key]):
+                    return False
+            return True
+        else:
+            return False
 
     def __ne__(self, other):
-        return True
+        return not self.__eq__(other)
 
     def insert(self, item_list, prefix):
         if item_list == []:
