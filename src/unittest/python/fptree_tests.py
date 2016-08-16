@@ -153,6 +153,14 @@ class FPTreeTest(FItemsetTestBase):
         fpt_4_1_expected = [1, [4], 3]
         self.assertEqual(fpt_4_1_expected, [fpt_4_1.value, fpt_4_1.prefix, fpt_4_1.count])
 
+    def is_subset(self, int_list, list_of_int_lists):
+        int_tuple = tuple(int_list)
+        list_of_int_tuples = []
+        for int_list in list_of_int_lists:
+            list_of_int_tuples.append(tuple(int_list))
+        sub_list = []
+        sub_list.append(int_tuple)
+        return set(sub_list).issubset(set(list_of_int_tuples))
 
     def test_mine_fp_tree(self):
         desc_list = _get_desc_list_of_frequent_one_items(self.data_set, self.min_sup)
@@ -160,19 +168,16 @@ class FPTreeTest(FItemsetTestBase):
 
         list_of_cond_fp_trees = _convert_pattern_base_to_list_of_conditional_fp_trees(pattern_base)
 
-        actual_result_1 = set([i for i in _mine_fp_tree(list_of_cond_fp_trees[0], desc_list) if list(i) in self.rearranged_data_set or list(i).reverse() in self.rearranged_data_set])
+        actual_result_1 = set([i for i in _mine_fp_tree(list_of_cond_fp_trees[0], desc_list) if self.is_subset(list(i), self.rearranged_data_set)])
         self.assertEqual({(1,)}, actual_result_1)
 
-        actual_result_2 = set([i for i in _mine_fp_tree(list_of_cond_fp_trees[1], desc_list) if
-                               list(i) in self.rearranged_data_set or list(i).reverse() in self.rearranged_data_set])
+        actual_result_2 = set([i for i in _mine_fp_tree(list_of_cond_fp_trees[1], desc_list) if self.is_subset(list(i), self.rearranged_data_set)])
         self.assertEqual({(2,)}, actual_result_2)
 
-        actual_result_3 = set([i for i in _mine_fp_tree(list_of_cond_fp_trees[2], desc_list) if
-                           list(i) in self.rearranged_data_set or list(i).reverse() in self.rearranged_data_set])
+        actual_result_3 = set([i for i in _mine_fp_tree(list_of_cond_fp_trees[2], desc_list) if self.is_subset(list(i), self.rearranged_data_set)])
         self.assertEqual({(3,)}, actual_result_3)
 
-        actual_result_4 = set([i for i in _mine_fp_tree(list_of_cond_fp_trees[3], desc_list) if
-                           list(i) in self.rearranged_data_set or list(i).reverse() in self.rearranged_data_set])
+        actual_result_4 = set([i for i in _mine_fp_tree(list_of_cond_fp_trees[3], desc_list) if self.is_subset(list(i), self.rearranged_data_set)])
         self.assertEqual({(4,), (1,), (1,4)}, actual_result_4)
 
     def test_retrieve(self):

@@ -134,12 +134,14 @@ def _mine_fp_tree(fp_tree, desc_list):
     result = []
     pattern_base = _construct_pattern_base(desc_list, fp_tree)
     list_of_trees = _convert_pattern_base_to_list_of_conditional_fp_trees(pattern_base)
+
     for i in range(len(list_of_trees)):
         if list_of_trees[i].value in pattern_base:
             if len(pattern_base[list_of_trees[i].value]) > 2:
                 result.extend(_mine_fp_tree(list_of_trees[i], desc_list))
             else:
                 result.extend(list_of_trees[i].retrieve_frequent_item_sets())
+
     return result
 
 def retrieve(data_set, min_sup):
