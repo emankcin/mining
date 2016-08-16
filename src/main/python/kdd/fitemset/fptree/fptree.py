@@ -54,7 +54,7 @@ class FrequentPatternTree():
                 nodes = self.children[child].get_all_nodes_with_values_helper(value, nodes)
         return nodes
 
-    def has_single_path(self):
+    def is_single_path(self):
         if len(self.children) > 1:
             return False
         elif len(self.children) == 0:
@@ -62,11 +62,11 @@ class FrequentPatternTree():
             result.append(self.value)
             return result
         else:
-            return self.children.values()[0].has_single_path()
+            return self.children.values()[0].is_single_path()
 
     def retrieve_frequent_item_sets(self):
         result = []
-        path = self.has_single_path()
+        path = self.is_single_path()
         if not path:
             return []
         else:
@@ -130,15 +130,15 @@ def _convert_pattern_base_to_list_of_conditional_fp_trees(pattern_base):
         result_list.append(conditional_fpt)
     return result_list
 
-def _mine_fp_tree(fp_tree, desc_list):
+def _mine_fp_tree(fp_tree, desc_list, min_sup):
     result = []
     pattern_base = _construct_pattern_base(desc_list, fp_tree)
     list_of_trees = _convert_pattern_base_to_list_of_conditional_fp_trees(pattern_base)
 
     for i in range(len(list_of_trees)):
-        if list_of_trees[i].value in pattern_base:
+        if list_of_trees[i].value in pattern_base and list_of_trees[i].count >= min_sup:
             if len(pattern_base[list_of_trees[i].value]) > 2:
-                result.extend(_mine_fp_tree(list_of_trees[i], desc_list))
+                result.extend(_mine_fp_tree(list_of_trees[i], desc_list, min_sup))
             else:
                 result.extend(list_of_trees[i].retrieve_frequent_item_sets())
 
@@ -148,6 +148,6 @@ def retrieve(data_set, min_sup):
     desc_list = _get_desc_list_of_frequent_one_items(data_set, min_sup)
     rearranged = _rearrange_data_set_according_to_one_items(data_set, desc_list)
     fpt = _generate_frequent_pattern_tree(rearranged)
-    result = _mine_fp_tree(fpt, desc_list)
+    result = _mine_fp_tree(fpt, desc_list, min_sup)
 
     return result
