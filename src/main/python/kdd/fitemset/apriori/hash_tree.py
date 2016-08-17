@@ -8,17 +8,30 @@ class HashTree():
         output = ""
         if self.level > 0:
             output += "\n"
-        output += (self.level * "\t") + "(k: " + str(self.k) + ", level: " + str(self.level) + ")"
-        for child in self.children.values():
-            output += child.__str__()
+        tab_width = 3*" "
+        output += (self.level * tab_width) + "(k: " + str(self.k) + ", level: " + str(self.level) + ")"
+        for key in self.children:
+            if isinstance(self.children[key], HashTree):
+                output += self.children[key].__str__()
+            else:
+                output += "\n" + (self.level + 1) * tab_width + "(values: " +  str(key) + ")"
         return output
 
 
     def __eq__(self, other):
         if self.k == other.k and self.level == other.level and len(self.children) == len(other.children):
-            for key in self.children:
-                if not key in other.children or not other.children[key].__eq__(self.children[key]):
-                    return False
+            for i in range(len(self.children.keys())):
+                self_key = self.children.keys()[i]
+                self_value = self.children.values()[i]
+                other_key = self.children.keys()[i]
+                other_value = self.children.values()[i]
+                if isinstance(self_value, HashTree):
+                    if not self_key in other.children or not self_value.__eq__(other_value):
+                        return False
+                else:
+                    if not self_key == other_key:
+                        return False
+
             return True
         else:
             return False

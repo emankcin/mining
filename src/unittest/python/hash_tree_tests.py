@@ -7,6 +7,38 @@ class HashTreeTest(unittest.TestCase):
     def setUp(self):
         self.ht = HashTree(2, 0)
 
+    def test_hash_tree_string(self):
+        self.ht.insert((1, 2))
+        self.ht.insert((0, 1))
+        self.ht.insert((0, 2))
+        self.ht.insert((1, 3))
+        self.ht.insert((2, 3))
+        expected = ("(k: 2, level: 0)\n"
+	                "   (k: 2, level: 1)\n"
+		            "      (k: 2, level: 2)\n"
+                    "         (values: (0, 2))\n"
+		            "      (k: 2, level: 2)\n"
+                    "         (values: (0, 1))\n"
+                    "         (values: (2, 3))\n"
+	                "   (k: 2, level: 1)\n"
+		            "      (k: 2, level: 2)\n"
+                    "         (values: (1, 2))\n"
+		            "      (k: 2, level: 2)\n"
+                    "         (values: (1, 3))")
+        self.assertEqual(expected, self.ht.__str__())
+
+    def test_hash_tree_equality(self):
+        self.ht.insert((1, 2))
+        self.ht.insert((0, 1))
+        self.ht.insert((0, 2))
+        self.ht.insert((1, 3))
+        ht_2 = HashTree(self.ht.k, self.ht.level)
+        ht_2.insert((1, 2))
+        ht_2.insert((0, 1))
+        ht_2.insert((0, 2))
+        ht_2.insert((1, 3))
+        self.assertEqual(self.ht, ht_2)
+
     def test_contains_inserted_elements(self):
         self.ht.insert((1,2))
         self.ht.insert((0,1))
