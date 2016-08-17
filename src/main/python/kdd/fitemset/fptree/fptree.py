@@ -1,6 +1,7 @@
 import numpy as np
 from itertools import combinations
 
+
 class FrequentPatternTree():
     def __init__(self, value, prefix):
         self.value = value
@@ -21,7 +22,8 @@ class FrequentPatternTree():
         return self._str(0)
 
     def __eq__(self, other):
-        if self.value == other.value and self.prefix == other.prefix and self.count == other.count and len(self.children) == len(other.children):
+        if self.value == other.value and self.prefix == other.prefix and self.count == other.count and len(
+                self.children) == len(other.children):
             for key in self.children:
                 if not key in other.children or not self.children[key].__eq__(other.children[key]):
                     return False
@@ -66,26 +68,29 @@ class FrequentPatternTree():
                 nodes = self.children[child].get_all_nodes_with_values_helper(value, nodes)
         return nodes
 
-    def is_single_path(self):
+    def is_frequent_single_path(self, min_sup):
         if len(self.children) > 1:
-            return False
-        elif len(self.children) == 0:
+            return []
+        elif len(self.children) == 0 or (self.count < min_sup and not self.prefix == []):
             result = self.prefix[:]
-            result.append(self.value)
+            if self.count >= min_sup or self.prefix == []:
+                result.append(self.value)
             return result
         else:
-            return self.children.values()[0].is_single_path()
+            return self.children.values()[0].is_frequent_single_path(min_sup)
 
-    def retrieve_frequent_item_sets(self):
-        result = []
-        path = self.is_single_path()
+    def retrieve_frequent_item_sets_of_single_path(self, min_sup):
+        result = set()
+        path = self.is_frequent_single_path(min_sup)
         if not path:
-            return []
+            return set()
         else:
             for L in range(1, len(path) + 1):
-                result.extend(list(combinations(path, L)))
+                result = result.union(set([tuple(sorted(i)) for i in list(combinations(path, L))]))
         return result
 
+    def retrieve_frequent_item_sets_of_multi_path(self, min_sup):
+        return set()
 
 def _get_desc_list_of_frequent_one_items(data_set, min_sup):
     items = {}
@@ -100,11 +105,11 @@ def _get_desc_list_of_frequent_one_items(data_set, min_sup):
 
     return desc_sorted_frequent_items
 
+
 def _rearrange_data_set_according_to_one_items(data_set, desc_list):
     rearranged = []
 
     for item_list in data_set:
-
         tmp = [i for i in item_list if i in desc_list]
         np_tmp = np.array(tmp)
 
@@ -118,11 +123,13 @@ def _rearrange_data_set_according_to_one_items(data_set, desc_list):
 
     return rearranged
 
+
 def _generate_frequent_pattern_tree(data_set):
     fpt = FrequentPatternTree(-1, [])
     for item_list in data_set:
         fpt.insert(item_list, [])
     return fpt
+
 
 def _construct_pattern_base(item_list, fp_tree):
     pattern_base = {}
@@ -130,6 +137,7 @@ def _construct_pattern_base(item_list, fp_tree):
         if fp_tree.contains(item):
             pattern_base[item] = fp_tree.get_all_nodes_with_value(item)
     return pattern_base
+
 
 def _convert_pattern_base_to_list_of_conditional_fp_trees(pattern_base):
     result_list = []
@@ -142,24 +150,43 @@ def _convert_pattern_base_to_list_of_conditional_fp_trees(pattern_base):
         result_list.append(conditional_fpt)
     return result_list
 
-def _mine_fp_tree(fp_tree, desc_list, min_sup):
-    result = []
-    pattern_base = _construct_pattern_base(desc_list, fp_tree)
-    list_of_trees = _convert_pattern_base_to_list_of_conditional_fp_trees(pattern_base)
+def is_subset(self, int_list, list_of_int_lists):
+    int_tuple = tuple(int_list)
+    list_of_int_tuples = []
+    for int_list in list_of_int_lists:
+        list_of_int_tuples.append(tuple(int_list))
+    sub_list = []
+    sub_list.append(int_tuple)
+    return set(sub_list).issubset(set(list_of_int_tuples))
 
-    for i in range(len(list_of_trees)):
-        if list_of_trees[i].value in pattern_base:
-            if len(pattern_base[list_of_trees[i].value]) > 2:
-                result.extend(_mine_fp_tree(list_of_trees[i], desc_list, min_sup))
+def _mine_fp_tree(fp_tree, desc_list, min_sup):
+    result = set()
+    is_single_path = fp_tree.is_frequent_single_path(min_sup)
+    if is_single_path:
+        result = fp_tree.retrieve_frequent_item_sets_of_single_path(min_sup)
+    else:
+        pattern_base = _construct_pattern_base(desc_list, fp_tree)
+        list_of_trees = _convert_pattern_base_to_list_of_conditional_fp_trees(pattern_base)
+
+        for tree in list_of_trees:
+            tree_with_root = FrequentPatternTree(-1, [])
+            tree_with_root.children[tree.value] = tree
+            is_single_path = tree_with_root.is_frequent_single_path(min_sup)
+            if is_single_path:
+                res = tree_with_root.retrieve_frequent_item_sets_of_single_path(min_sup)
             else:
-                result.extend(list_of_trees[i].retrieve_frequent_item_sets())
+                res = tree_with_root.retrieve_frequent_item_sets_of_multi_path(min_sup)
+            result = result.union(res)
 
     return result
+
 
 def retrieve(data_set, min_sup):
     desc_list = _get_desc_list_of_frequent_one_items(data_set, min_sup)
     rearranged = _rearrange_data_set_according_to_one_items(data_set, desc_list)
     fpt = _generate_frequent_pattern_tree(rearranged)
     result = _mine_fp_tree(fpt, desc_list, min_sup)
+    result = list(result)
+    result.sort()
 
     return result

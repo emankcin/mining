@@ -1,11 +1,14 @@
 from fitemset_testbase import FItemsetTestBase
-from kdd.fitemset.fptree.fptree import FrequentPatternTree, _get_desc_list_of_frequent_one_items, _rearrange_data_set_according_to_one_items, _generate_frequent_pattern_tree, _construct_pattern_base, _convert_pattern_base_to_list_of_conditional_fp_trees, _mine_fp_tree, retrieve
-class FPTreeTest(FItemsetTestBase):
+from kdd.fitemset.fptree.fptree import FrequentPatternTree, _get_desc_list_of_frequent_one_items, \
+    _rearrange_data_set_according_to_one_items, _generate_frequent_pattern_tree, _construct_pattern_base, \
+    _convert_pattern_base_to_list_of_conditional_fp_trees, _mine_fp_tree, retrieve
 
+
+class FPTreeTest(FItemsetTestBase):
     def setUp(self):
         self.data_set = [[1], [2],
-                         [1,2], [1,3], [1,4], [3,4],
-                         [1,2,4], [1,3,4]]
+                         [1, 2], [1, 3], [1, 4], [3, 4],
+                         [1, 2, 4], [1, 3, 4]]
         self.min_sup = 3
         self.rearranged_data_set = [[1], [2],
                                     [1, 2], [1, 3], [1, 4], [4, 3],
@@ -14,23 +17,23 @@ class FPTreeTest(FItemsetTestBase):
 
     def test_pattern_tree_string(self):
         fpt_multi_path = _generate_frequent_pattern_tree(self.rearranged_data_set)
-        fpt_multi_path_str =   ("-1:1\n"
-                                "   1:6\n"
-                                "      2:1\n"
-                                "      3:1\n"
-                                "      4:3\n"
-                                "         2:1\n"
-                                "         3:1\n"
-                                "   2:1\n"
-                                "   4:1\n"
-                                "      3:1")
+        fpt_multi_path_str = ("-1:1\n"
+                              "   1:6\n"
+                              "      2:1\n"
+                              "      3:1\n"
+                              "      4:3\n"
+                              "         2:1\n"
+                              "         3:1\n"
+                              "   2:1\n"
+                              "   4:1\n"
+                              "      3:1")
         self.assertEqual(fpt_multi_path_str, fpt_multi_path.__str__())
-        fpt_single_path = _generate_frequent_pattern_tree([[1,2,3], [1,2], [1,2,3,4], [1], [1,2,3]])
-        fpt_single_path_str =  ("-1:1\n"
-                                "   1:5\n"
-                                "      2:4\n"
-                                "         3:3\n"
-                                "            4:1")
+        fpt_single_path = _generate_frequent_pattern_tree([[1, 2, 3], [1, 2], [1, 2, 3, 4], [1], [1, 2, 3]])
+        fpt_single_path_str = ("-1:1\n"
+                               "   1:5\n"
+                               "      2:4\n"
+                               "         3:3\n"
+                               "            4:1")
         self.assertEqual(fpt_single_path_str, fpt_single_path.__str__())
 
     def test_pattern_tree_equality(self):
@@ -48,21 +51,27 @@ class FPTreeTest(FItemsetTestBase):
         self.assertEqual(fpt_3, fpt_3)
 
     def test_pattern_tree_is_single_path(self):
-        single_path_example = [[1,2,3], [1,2,3], [1,2], [1]]
-        not_single_path_example = [[1,2,3], [1,2,4]]
-        self.assertEqual(single_path_example[0], _generate_frequent_pattern_tree(single_path_example).is_single_path())
-        self.assertFalse(_generate_frequent_pattern_tree(not_single_path_example).is_single_path())
+        single_path_example = _generate_frequent_pattern_tree([[1, 2, 3], [1, 2, 3], [1, 2], [1]])
+        not_single_path_example = _generate_frequent_pattern_tree([[1, 2, 3], [1, 2, 4]])
+        another_single_path_example = _generate_frequent_pattern_tree([[1,2,3], [1,2,3]])
+        self.assertEqual([1,2], single_path_example.is_frequent_single_path(self.min_sup))
+        self.assertFalse(not_single_path_example.is_frequent_single_path(self.min_sup))
+        self.assertEqual([1], another_single_path_example.is_frequent_single_path(self.min_sup))
 
     def test_retrieve_frequent_item_sets_of_single_path(self):
-        pass
+        fpt_1 = _generate_frequent_pattern_tree(self.rearranged_data_set)
+        print fpt_1.retrieve_frequent_item_sets_of_single_path(self.min_sup)
+        fpt_2 = _generate_frequent_pattern_tree([[1,2,3], [1,2], [1,2]])
+        print fpt_2.retrieve_frequent_item_sets_of_single_path(self.min_sup)
 
     def test_get_desc_list_of_frequent_one_items(self):
-        self.assertEqual([1,4,2,3], _get_desc_list_of_frequent_one_items(self.data_set, self.min_sup))
-        self.assertEqual([1,4], _get_desc_list_of_frequent_one_items(self.data_set, 4))
+        self.assertEqual([1, 4, 2, 3], _get_desc_list_of_frequent_one_items(self.data_set, self.min_sup))
+        self.assertEqual([1, 4], _get_desc_list_of_frequent_one_items(self.data_set, 4))
         self.assertEqual([], _get_desc_list_of_frequent_one_items(self.data_set, 10))
 
     def test_rearrange_data_set_according_to_one_items(self):
-        self.assertEqual(self.rearranged_data_set, _rearrange_data_set_according_to_one_items(self.data_set, [1, 4, 2, 3]))
+        self.assertEqual(self.rearranged_data_set,
+                         _rearrange_data_set_according_to_one_items(self.data_set, [1, 4, 2, 3]))
 
     def test_generate_frequent_pattern_tree(self):
         fpt = _generate_frequent_pattern_tree(self.rearranged_data_set)
@@ -73,7 +82,7 @@ class FPTreeTest(FItemsetTestBase):
 
         self.assertEqual(-1, fpt.value)
         self.assertEqual([], fpt.prefix)
-        self.assertEqual([1,2,4], fpt.children.keys())
+        self.assertEqual([1, 2, 4], fpt.children.keys())
         self.assertEqual(1, fpt.count)
 
         fpt_1 = fpt.children[1]
@@ -85,12 +94,12 @@ class FPTreeTest(FItemsetTestBase):
         fpt_1_4 = fpt_1.children[4]
         self.assertEqual(4, fpt_1_4.value)
         self.assertEqual([1], fpt_1_4.prefix)
-        self.assertEqual([2,3], fpt_1_4.children.keys())
+        self.assertEqual([2, 3], fpt_1_4.children.keys())
         self.assertEqual(3, fpt_1_4.count)
 
         fpt_1_4_2 = fpt_1_4.children[2]
         self.assertEqual(2, fpt_1_4_2.value)
-        self.assertEqual([1,4], fpt_1_4_2.prefix)
+        self.assertEqual([1, 4], fpt_1_4_2.prefix)
         self.assertEqual([], fpt_1_4_2.children.keys())
         self.assertEqual(1, fpt_1_4_2.count)
 
@@ -132,23 +141,20 @@ class FPTreeTest(FItemsetTestBase):
         value = 3
         for node in pattern_base[value]:
             self.assertEqual(node.value, value)
-        for i in [1,2,4]:
+        for i in [1, 2, 4]:
             if i in pattern_base:
                 for node in pattern_base[i]:
                     self.assertNotEqual(node.value, value)
 
         self.assertEqual([1, [1]], [pattern_base[2][0].count, pattern_base[2][0].prefix])
-        self.assertEqual([1, [1,4]], [pattern_base[3][1].count, pattern_base[3][1].prefix])
+        self.assertEqual([1, [1, 4]], [pattern_base[3][1].count, pattern_base[3][1].prefix])
         self.assertEqual([3, [1]], [pattern_base[4][0].count, pattern_base[4][0].prefix])
         self.assertEqual([1, []], [pattern_base[4][1].count, pattern_base[4][1].prefix])
-
-
 
     def test_convert_pattern_base_to_list_of_conditional_fp_trees(self):
         pattern_base = self.pattern_base_example_getter()
 
         list_of_cond_fp_trees = _convert_pattern_base_to_list_of_conditional_fp_trees(pattern_base)
-
 
         fpt_1 = list_of_cond_fp_trees[0]
         # [value, prefix, count, children]
@@ -183,35 +189,29 @@ class FPTreeTest(FItemsetTestBase):
         fpt_4_1_expected = [1, [4], 3]
         self.assertEqual(fpt_4_1_expected, [fpt_4_1.value, fpt_4_1.prefix, fpt_4_1.count])
 
-    def is_subset(self, int_list, list_of_int_lists):
-        int_tuple = tuple(int_list)
-        list_of_int_tuples = []
-        for int_list in list_of_int_lists:
-            list_of_int_tuples.append(tuple(int_list))
-        sub_list = []
-        sub_list.append(int_tuple)
-        return set(sub_list).issubset(set(list_of_int_tuples))
+    def test_mine_single_path_fp_tree(self):
+        data_set = [[1,2,3], [1,2,3], [1,2,3], [1,2]]
+        desc_list = _get_desc_list_of_frequent_one_items(data_set, self.min_sup)
+        pattern_base = _construct_pattern_base([1,2,3], _generate_frequent_pattern_tree(data_set))
+        list_of_cond_fp_trees = _convert_pattern_base_to_list_of_conditional_fp_trees(pattern_base)
+        result = []
+        for cond_fp_tree in list_of_cond_fp_trees:
+            print cond_fp_tree
+            result += _mine_fp_tree(cond_fp_tree, desc_list, self.min_sup)
+        print result
 
     def test_mine_fp_tree(self):
-        desc_list = _get_desc_list_of_frequent_one_items(self.data_set, self.min_sup)
+        #desc_list = _get_desc_list_of_frequent_one_items(self.data_set, self.min_sup)
         pattern_base = self.pattern_base_example_getter()
-
         list_of_cond_fp_trees = _convert_pattern_base_to_list_of_conditional_fp_trees(pattern_base)
 
-        actual_result_1 = set([i for i in _mine_fp_tree(list_of_cond_fp_trees[0], desc_list, self.min_sup) if self.is_subset(list(i), self.rearranged_data_set)])
-        self.assertEqual({(1,)}, actual_result_1)
-
-        actual_result_2 = set([i for i in _mine_fp_tree(list_of_cond_fp_trees[1], desc_list, self.min_sup) if self.is_subset(list(i), self.rearranged_data_set)])
-        self.assertEqual({(2,)}, actual_result_2)
-
-        actual_result_3 = set([i for i in _mine_fp_tree(list_of_cond_fp_trees[2], desc_list, self.min_sup) if self.is_subset(list(i), self.rearranged_data_set)])
-        self.assertEqual({(3,)}, actual_result_3)
-
-        actual_result_4 = set([i for i in _mine_fp_tree(list_of_cond_fp_trees[3], desc_list, self.min_sup) if self.is_subset(list(i), self.rearranged_data_set)])
-        self.assertEqual({(4,), (1,), (1,4)}, actual_result_4)
+    def test_retrieve_simple_single_path(self):
+        data_set = [[1,2,3], [1,2,3,4], [1,2,3], [1,2], [1]]
+        min_sup = 3
+        expected_result = retrieve(data_set, min_sup)
+        self.assertEqual([(1,), (1, 2), (1, 2, 3), (1, 3), (2,), (2, 3), (3,)], expected_result)
 
     def test_retrieve(self):
-        expected_result = {[(1,), (2,), (4,)]}
+        expected_result = {(1,), (2,), (4,)}
         min_sup = 4
         self.assertEqual(expected_result, retrieve(self.data_set, min_sup))
-
