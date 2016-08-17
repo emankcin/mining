@@ -5,8 +5,8 @@ Algorithms:
 
 - frequent-itemset
     - apriori
-      - default
-      - hash tree
+        - default
+        - hash tree
     - fp tree
     
 Commands after cloning:
