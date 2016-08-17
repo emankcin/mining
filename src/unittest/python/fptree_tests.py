@@ -12,6 +12,27 @@ class FPTreeTest(FItemsetTestBase):
                                     [1, 4, 2], [1, 4, 3]]
         self.result = {(1,), (2,), (3,), (4,), (1, 4)}
 
+    def test_pattern_tree_string(self):
+        fpt_multi_path = _generate_frequent_pattern_tree(self.rearranged_data_set)
+        fpt_multi_path_str =   ("-1:1\n"
+                                "   1:6\n"
+                                "      2:1\n"
+                                "      3:1\n"
+                                "      4:3\n"
+                                "         2:1\n"
+                                "         3:1\n"
+                                "   2:1\n"
+                                "   4:1\n"
+                                "      3:1")
+        self.assertEqual(fpt_multi_path_str, fpt_multi_path.__str__())
+        fpt_single_path = _generate_frequent_pattern_tree([[1,2,3], [1,2], [1,2,3,4], [1], [1,2,3]])
+        fpt_single_path_str =  ("-1:1\n"
+                                "   1:5\n"
+                                "      2:4\n"
+                                "         3:3\n"
+                                "            4:1")
+        self.assertEqual(fpt_single_path_str, fpt_single_path.__str__())
+
     def test_pattern_tree_equality(self):
         fpt_1 = _generate_frequent_pattern_tree(self.rearranged_data_set)
         fpt_2 = _generate_frequent_pattern_tree(self.rearranged_data_set)

@@ -8,6 +8,18 @@ class FrequentPatternTree():
         self.count = 1
         self.children = {}
 
+    def _str(self, level):
+        output = ""
+        if level > 0:
+            output += "\n"
+        output += (level * "   ") + str(self.value) + ":" + str(self.count)
+        for child in self.children.values():
+            output += child._str(level + 1)
+        return output
+
+    def __str__(self):
+        return self._str(0)
+
     def __eq__(self, other):
         if self.value == other.value and self.prefix == other.prefix and self.count == other.count and len(self.children) == len(other.children):
             for key in self.children:
@@ -136,7 +148,7 @@ def _mine_fp_tree(fp_tree, desc_list, min_sup):
     list_of_trees = _convert_pattern_base_to_list_of_conditional_fp_trees(pattern_base)
 
     for i in range(len(list_of_trees)):
-        if list_of_trees[i].value in pattern_base and list_of_trees[i].count >= min_sup:
+        if list_of_trees[i].value in pattern_base:
             if len(pattern_base[list_of_trees[i].value]) > 2:
                 result.extend(_mine_fp_tree(list_of_trees[i], desc_list, min_sup))
             else:
