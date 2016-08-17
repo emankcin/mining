@@ -4,6 +4,28 @@ class HashTree():
         self.children = {}
         self.level = level
 
+    def __str__(self):
+        output = ""
+        if self.level > 0:
+            output += "\n"
+        output += (self.level * "\t") + "(k: " + str(self.k) + ", level: " + str(self.level) + ")"
+        for child in self.children.values():
+            output += child.__str__()
+        return output
+
+
+    def __eq__(self, other):
+        if self.k == other.k and self.level == other.level and len(self.children) == len(other.children):
+            for key in self.children:
+                if not key in other.children or not other.children[key].__eq__(self.children[key]):
+                    return False
+            return True
+        else:
+            return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def insert(self, tup):
         if self.level == self.k:
             self.children[tup] = 1
