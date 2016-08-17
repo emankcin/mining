@@ -108,48 +108,52 @@ def _get_frequent_n_item_tuples_with_counts(data_set, n_item_lists, min_sup):
         n_item_tuple = tuple(n_item_list)
 
         if n_item_tuple in k_counts and k_counts[n_item_tuple] >= min_sup:
-
             result[n_item_tuple] = k_counts[n_item_tuple]
 
     return result
 
+
 def _get_frequent_n_item_lists(data_set, n_item_lists, min_sup):
     """
-        Example:
+    Example:
 
-        >>> from kdd.fitemset.apriori.apriori import _get_frequent_n_item_lists
+    >>> from kdd.fitemset.apriori.apriori import _get_frequent_n_item_lists
 
-        >>> data_set = [[1,2,3,4,5], [2,3,4,5,6], [3,4,5,6,7]]
-        >>> n_item_lists = [[2,3], [3,4]]
-        >>> min_sup = 2
-        >>> _get_frequent_n_item_lists(data_set, n_item_lists, min_sup)
-        [[3, 4], [2, 3]]
-        """
+    >>> data_set = [[1,2,3,4,5], [2,3,4,5,6], [3,4,5,6,7]]
+    >>> n_item_lists = [[2,3], [3,4]]
+    >>> min_sup = 2
+    >>> _get_frequent_n_item_lists(data_set, n_item_lists, min_sup)
+    [[3, 4], [2, 3]]
+    """
     return [list(tup) for tup in _get_frequent_n_item_tuples_with_counts(data_set, n_item_lists, min_sup).keys()]
+
 
 def _construct_hash_tree(item_lists):
     if len(item_lists) > 0:
         k = len(item_lists[0])
     else:
-        # TODO: write a custom Exception
-        raise Exception
+        raise ValueError("Failed to construct hash tree of empty list.")
+
     ht = HashTree(k, 0)
     for item_list in item_lists:
-        ht.insert(tuple(item_list))
+        ht._insert(tuple(item_list))
+
     return ht
 
 
-def _get_frequent_n_item_tuples_with_counts_by_hash_tree(dataset, hash_tree, min_sup):
+def _get_frequent_n_item_tuples_with_counts_by_hash_tree(data_set, hash_tree, min_sup):
     result_dic = {}
-    for ta in dataset:
-        ta = [int(float(i)) for i in ta]
+
+    for ta in data_set:
+        # use merge sort because it's efficient for already sorted arrays
         ta = list(np.sort(ta, kind='mergesort'))
-        tmp = hash_tree.get_itemsets_in_transaction(ta)
+        tmp = hash_tree._get_item_sets_in_transaction(ta)
         for key in tmp:
             if key in result_dic:
                 result_dic[key] = result_dic[key] + tmp[key]
             else:
                 result_dic[key] = tmp[key]
+
     # drop non-frequent item sets
     result_dic = {k: v for k, v in result_dic.iteritems() if v >= min_sup}
     return result_dic
@@ -178,7 +182,7 @@ def apriori(data_set, min_sup, with_hash_tree=True):
     >>> apriori(data_set, min_sup)
     {(8,): 4, (3,): 2, (7, 8, 9): 2, (9,): 2, (8, 9): 2, (6,): 3, (7,): 4, (7, 8): 2, (7, 9): 2}
     """
-    result =  _retrieve_frequent_singleton_counts(data_set, min_sup)
+    result = _retrieve_frequent_singleton_counts(data_set, min_sup)
     k_result = result.copy()
 
     while True:
@@ -201,6 +205,6 @@ def apriori(data_set, min_sup, with_hash_tree=True):
             else:
                 result.update(k_result)
 
-    #print "result: "
-    #print result
+    # print "result: "
+    # print result
     return result

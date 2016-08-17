@@ -8,11 +8,11 @@ class HashTreeTest(unittest.TestCase):
         self.ht = HashTree(2, 0)
 
     def test_hash_tree_string(self):
-        self.ht.insert((1, 2))
-        self.ht.insert((0, 1))
-        self.ht.insert((0, 2))
-        self.ht.insert((1, 3))
-        self.ht.insert((2, 3))
+        self.ht._insert((1, 2))
+        self.ht._insert((0, 1))
+        self.ht._insert((0, 2))
+        self.ht._insert((1, 3))
+        self.ht._insert((2, 3))
         expected = ("(k: 2, level: 0)\n"
 	                "   (k: 2, level: 1)\n"
 		            "      (k: 2, level: 2)\n"
@@ -28,37 +28,37 @@ class HashTreeTest(unittest.TestCase):
         self.assertEqual(expected, self.ht.__str__())
 
     def test_hash_tree_equality(self):
-        self.ht.insert((1, 2))
-        self.ht.insert((0, 1))
-        self.ht.insert((0, 2))
-        self.ht.insert((1, 3))
+        self.ht._insert((1, 2))
+        self.ht._insert((0, 1))
+        self.ht._insert((0, 2))
+        self.ht._insert((1, 3))
         ht_2 = HashTree(self.ht.k, self.ht.level)
-        ht_2.insert((1, 2))
-        ht_2.insert((0, 1))
-        ht_2.insert((0, 2))
-        ht_2.insert((1, 3))
+        ht_2._insert((1, 2))
+        ht_2._insert((0, 1))
+        ht_2._insert((0, 2))
+        ht_2._insert((1, 3))
         self.assertEqual(self.ht, ht_2)
 
-    def test_contains_inserted_elements(self):
-        self.ht.insert((1,2))
-        self.ht.insert((0,1))
-        self.ht.insert((0,2))
-        self.ht.insert((1,3))
-        self.assertTrue(self.ht.contains((1,2)))
-        self.assertTrue(self.ht.contains((0,1)))
-        self.assertTrue(self.ht.contains((0,2)))
-        self.assertTrue(self.ht.contains((1,3)))
-        self.assertFalse(self.ht.contains((2,3)))
+    def test_contains__inserted_elements(self):
+        self.ht._insert((1,2))
+        self.ht._insert((0,1))
+        self.ht._insert((0,2))
+        self.ht._insert((1,3))
+        self.assertTrue(self.ht._contains((1,2)))
+        self.assertTrue(self.ht._contains((0,1)))
+        self.assertTrue(self.ht._contains((0,2)))
+        self.assertTrue(self.ht._contains((1,3)))
+        self.assertFalse(self.ht._contains((2,3)))
 
-    def test_contains_inserted_elements_with_length_five(self):
+    def test_contains__inserted_elements_with_length_five(self):
         ht_five = HashTree(5, 0)
-        ht_five.insert((1, 2, 3, 4, 5))
-        self.assertTrue(ht_five.contains((1, 2, 3, 4, 5)))
-        self.assertFalse(ht_five.contains((1, 2, 3, 4, 6)))
+        ht_five._insert((1, 2, 3, 4, 5))
+        self.assertTrue(ht_five._contains((1, 2, 3, 4, 5)))
+        self.assertFalse(ht_five._contains((1, 2, 3, 4, 6)))
 
     def test_get_item_sets_in_transaction(self):
-        self.ht.insert((1, 2))
-        self.ht.insert((0, 1))
-        self.assertEqual({(0, 1): 1, (1, 2): 1}, self.ht.get_itemsets_in_transaction([0, 1, 2]))
-        self.assertEqual({(0, 1): 1}, self.ht.get_itemsets_in_transaction([0, 1, 3]))
-        self.assertEqual({}, self.ht.get_itemsets_in_transaction([2, 3, 4]))
+        self.ht._insert((1, 2))
+        self.ht._insert((0, 1))
+        self.assertEqual({(0, 1): 1, (1, 2): 1}, self.ht._get_item_sets_in_transaction([0, 1, 2]))
+        self.assertEqual({(0, 1): 1}, self.ht._get_item_sets_in_transaction([0, 1, 3]))
+        self.assertEqual({}, self.ht._get_item_sets_in_transaction([2, 3, 4]))

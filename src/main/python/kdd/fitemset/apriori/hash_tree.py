@@ -8,15 +8,14 @@ class HashTree():
         output = ""
         if self.level > 0:
             output += "\n"
-        tab_width = 3*" "
+        tab_width = 3 * " "
         output += (self.level * tab_width) + "(k: " + str(self.k) + ", level: " + str(self.level) + ")"
         for key in self.children:
             if isinstance(self.children[key], HashTree):
                 output += self.children[key].__str__()
             else:
-                output += "\n" + (self.level + 1) * tab_width + "(values: " +  str(key) + ")"
+                output += "\n" + (self.level + 1) * tab_width + "(values: " + str(key) + ")"
         return output
-
 
     def __eq__(self, other):
         if self.k == other.k and self.level == other.level and len(self.children) == len(other.children):
@@ -39,31 +38,31 @@ class HashTree():
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def insert(self, tup):
+    def _insert(self, tup):
         if self.level == self.k:
             self.children[tup] = 1
         else:
             hash = tup[self.level] % self.k
             if not hash in self.children:
                 son = HashTree(self.k, self.level + 1)
-                son.insert(tup)
+                son._insert(tup)
                 self.children[hash] = son
             else:
-                self.children[hash].insert(tup)
+                self.children[hash]._insert(tup)
 
-    def contains(self, tup):
+    def _contains(self, tup):
         if tup in self.children:
             return True
         elif self.level < self.k:
             hash = tup[self.level] % self.k
             if hash in self.children:
-                return self.children[hash].contains(tup)
+                return self.children[hash]._contains(tup)
             else:
                 return False
         else:
             return False
 
-    def _helper_get_itemsets_in_transaction(self, original_ta, ta, result):
+    def _helper_get_item_sets_in_transaction(self, original_ta, ta, result):
         if self.level == self.k:
             for c in self.children:
                 s = set(c)
@@ -75,8 +74,8 @@ class HashTree():
                 hash = ta[i] % self.k
                 if hash in self.children:
                     result.update(
-                        self.children[hash]._helper_get_itemsets_in_transaction(original_ta, ta[i + 1:], result))
+                        self.children[hash]._helper_get_item_sets_in_transaction(original_ta, ta[i + 1:], result))
             return result
 
-    def get_itemsets_in_transaction(self, ta):
-        return self._helper_get_itemsets_in_transaction(ta, ta, {})
+    def _get_item_sets_in_transaction(self, ta):
+        return self._helper_get_item_sets_in_transaction(ta, ta, {})
