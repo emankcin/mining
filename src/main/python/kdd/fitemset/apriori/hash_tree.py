@@ -22,7 +22,7 @@ class HashTree():
         elif self.level < self.k:
             hash = tup[self.level] % self.k
             if hash in self.children:
-                return self.children[hash]._contains(tup)
+                return self.children[hash].contains(tup)
             else:
                 return False
         else:

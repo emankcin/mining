@@ -92,7 +92,6 @@ def retrieve_frequent_item_tuples(data_set, min_sup):
 
     Example:
     >>> from kdd.fitemset.fptree.fp_tree_algorithm import retrieve_frequent_item_tuples
-
     >>> data_set = [[1,2], [1,3], [1,4], [2], [2,3,4], (3,4)]
     >>> min_sup = 2
     >>> retrieve_frequent_item_tuples(data_set, min_sup)

@@ -45,8 +45,8 @@ class AprioriTest(FItemsetTestBase):
 
     def test_construct_hash_tree(self):
         ht = _construct_hash_tree([[1, 2], [2, 3]])
-        self.assertTrue(ht._contains((1, 2)))
-        self.assertFalse(ht._contains((1, 3)))
+        self.assertTrue(ht.contains((1, 2)))
+        self.assertFalse(ht.contains((1, 3)))
 
     def test_get_frequent_n_item_tuples_with_counts_by_hash_tree(self):
         ht = _construct_hash_tree([[1, 2], [1, 3], [2, 3]])
