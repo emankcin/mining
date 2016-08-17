@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kdd.clustering package</title>
+    
+    <link rel="stylesheet" href="_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" /> 
+  </head>
+  <body role="document">
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="kdd.fitemset.html" title="kdd.fitemset package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="kdd.html" title="kdd package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">mining 0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >python</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="kdd.html" accesskey="U">kdd package</a> &raquo;</li> 
+      </ul>
+    </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="kdd-clustering-package">
+<h1>kdd.clustering package</h1>
+<div class="section" id="submodules">
+<h2>Submodules</h2>
+</div>
+<div class="section" id="module-kdd.clustering.executor">
+<span id="kdd-clustering-executor-module"></span><h2>kdd.clustering.executor module</h2>
+<dl class="function">
+<dt id="kdd.clustering.executor.main">
+<code class="descclassname">kdd.clustering.executor.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kdd/clustering/executor.html#main"><span class="viewcode-link">[source]</span></a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-kdd.clustering.kmeans">
+<span id="kdd-clustering-kmeans-module"></span><h2>kdd.clustering.kmeans module</h2>
+<dl class="class">
+<dt id="kdd.clustering.kmeans.KMeans">
+<em class="property">class </em><code class="descclassname">kdd.clustering.kmeans.</code><code class="descname">KMeans</code><span class="sig-paren">(</span><em>dataset</em>, <em>k=4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kdd/clustering/kmeans.html#KMeans"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Administration of k-means algorithm</p>
+<dl class="attribute">
+<dt id="kdd.clustering.kmeans.KMeans.centroids">
+<code class="descname">centroids</code></dt>
+<dd><p>Get the k centroids of the k clusters</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="kdd.clustering.kmeans.KMeans.clusters">
+<code class="descname">clusters</code></dt>
+<dd><p>Get the k clusters</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="kdd.clustering.kmeans.KMeans.k">
+<code class="descname">k</code></dt>
+<dd><p>Get k-means parameter k</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kdd.clustering.kmeans.KMeans.kmeans">
+<code class="descname">kmeans</code><span class="sig-paren">(</span><em>visualizeSteps=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kdd/clustering/kmeans.html#KMeans.kmeans"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Find k centroids of clusters in the data set and visualize the result.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>(bool)</strong> (<em>visualizeSteps</em>) &#8211; flag for visualization of each iteration result</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kdd.clustering.kmeans.KMeans.reinitialize">
+<code class="descname">reinitialize</code><span class="sig-paren">(</span><em>k=4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kdd/clustering/kmeans.html#KMeans.reinitialize"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Reinitialize object with a new value of k</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kdd.clustering">
+<span id="module-contents"></span><h2>Module contents</h2>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Johannes Knaut.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
+    </div>
+  </body>
+</html>

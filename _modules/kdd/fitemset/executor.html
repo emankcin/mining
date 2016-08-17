@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kdd.fitemset.executor</title>
+    
+    <link rel="stylesheet" href="../../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" /> 
+  </head>
+  <body role="document">
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">mining 0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kdd.fitemset.executor</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">pandas</span> <span class="k">import</span> <span class="n">read_csv</span>
+
+<span class="kn">from</span> <span class="nn">apriori.apriori</span> <span class="k">import</span> <span class="n">apriori</span>
+<span class="kn">from</span> <span class="nn">fptree.fp_tree_algorithm</span> <span class="k">import</span> <span class="n">retrieve_frequent_item_tuples</span>
+
+
+<div class="viewcode-block" id="convert_receipts"><a class="viewcode-back" href="../../../kdd.fitemset.html#kdd.fitemset.executor.convert_receipts">[docs]</a><span class="k">def</span> <span class="nf">convert_receipts</span><span class="p">(</span><span class="n">raw_dataset</span><span class="p">):</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">itemset</span> <span class="ow">in</span> <span class="n">raw_dataset</span><span class="p">:</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">itemset</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="n">tmp</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="p">))</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">]</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dataset</span></div>
+
+
+<div class="viewcode-block" id="load_receipts_csv"><a class="viewcode-back" href="../../../kdd.fitemset.html#kdd.fitemset.executor.load_receipts_csv">[docs]</a><span class="k">def</span> <span class="nf">load_receipts_csv</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="n">raw_dataset</span> <span class="o">=</span> <span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">convert_receipts</span><span class="p">(</span><span class="n">raw_dataset</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dataset</span></div>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../kdd.fitemset.html#kdd.fitemset.executor.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">receipts</span> <span class="o">=</span> <span class="s2">&quot;../../../resources/receipts.csv&quot;</span>
+    <span class="c1">#description = &quot;../../../resources/item_description.csv&quot;</span>
+
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">load_receipts_csv</span><span class="p">(</span><span class="n">receipts</span><span class="p">)</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[:</span><span class="mi">500</span><span class="p">]</span>
+
+    <span class="c1">#item_description = read_csv(description, &quot;r&quot;, header=None, delimiter=&quot;,&quot;, index_col=0, skiprows=1)</span>
+
+    <span class="n">min_sup</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">sets1</span> <span class="o">=</span> <span class="n">apriori</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">min_sup</span><span class="p">,</span> <span class="n">with_hash_tree</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t1</span>
+    <span class="nb">print</span> <span class="s2">&quot;apriori without hash tree: &quot;</span><span class="p">,</span> <span class="n">sets1</span>
+    <span class="nb">print</span> <span class="s2">&quot;(as sorted list) apriori without hash tree: &quot;</span>
+    <span class="nb">print</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">sets1</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="n">t2</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">sets2</span> <span class="o">=</span> <span class="n">apriori</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">min_sup</span><span class="p">,</span> <span class="n">with_hash_tree</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">t2</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t2</span>
+    <span class="nb">print</span> <span class="s2">&quot;apriori with hash tree: &quot;</span><span class="p">,</span> <span class="n">sets2</span>
+    <span class="nb">print</span> <span class="s2">&quot;(as sorted list:) apriori with hash tree: &quot;</span>
+    <span class="nb">print</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">sets2</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="nb">print</span> <span class="s2">&quot;comparison of apriori algorithm variants:&quot;</span>
+    <span class="nb">print</span> <span class="s2">&quot;hash tree variant needed &quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">t2</span> <span class="o">/</span> <span class="n">t1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">% o</span><span class="s2">f the time of the variant without a hash tree.&quot;</span>
+
+    <span class="nb">print</span> <span class="s2">&quot;apriori variants have same result: &quot;</span><span class="p">,</span> <span class="n">sets1</span> <span class="o">==</span> <span class="n">sets2</span>
+
+    <span class="n">t3</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">sets3</span> <span class="o">=</span> <span class="n">retrieve_frequent_item_tuples</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">min_sup</span><span class="p">)</span>
+    <span class="n">t3</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t3</span>
+    <span class="nb">print</span> <span class="s2">&quot;(as sorted list:) frequent pattern tree algorithm: &quot;</span>
+    <span class="nb">print</span> <span class="n">sets3</span>
+    <span class="nb">print</span> <span class="s2">&quot;comparison of hash tree apriori with fp tree algorithm: &quot;</span>
+    <span class="nb">print</span> <span class="s2">&quot;fp tree algorithm needed &quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">t3</span> <span class="o">/</span> <span class="n">t1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">% o</span><span class="s2">f the time of the apriori variant without a hash tree&quot;</span>
+
+    <span class="nb">print</span> <span class="s2">&quot;apriori variants and fp tree algorithm have same result: &quot;</span><span class="p">,</span> <span class="n">sets1</span> <span class="o">==</span> <span class="n">sets2</span> <span class="ow">and</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">sets2</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="n">sets3</span></div>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Johannes Knaut.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
+    </div>
+  </body>
+</html>

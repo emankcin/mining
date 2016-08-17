@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kdd.fitemset.apriori package</title>
+    
+    <link rel="stylesheet" href="_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" /> 
+  </head>
+  <body role="document">
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="kdd.fitemset.fptree.html" title="kdd.fitemset.fptree package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="kdd.fitemset.html" title="kdd.fitemset package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">mining 0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >python</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="kdd.html" >kdd package</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="kdd.fitemset.html" accesskey="U">kdd.fitemset package</a> &raquo;</li> 
+      </ul>
+    </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="kdd-fitemset-apriori-package">
+<h1>kdd.fitemset.apriori package</h1>
+<div class="section" id="submodules">
+<h2>Submodules</h2>
+</div>
+<div class="section" id="module-kdd.fitemset.apriori.apriori">
+<span id="kdd-fitemset-apriori-apriori-module"></span><h2>kdd.fitemset.apriori.apriori module</h2>
+<dl class="function">
+<dt id="kdd.fitemset.apriori.apriori.apriori">
+<code class="descclassname">kdd.fitemset.apriori.apriori.</code><code class="descname">apriori</code><span class="sig-paren">(</span><em>data_set</em>, <em>min_sup</em>, <em>with_hash_tree=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kdd/fitemset/apriori/apriori.html#apriori"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>The apriori algorithm for retrieving frequent item tuples together with their counts.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data_set</strong> &#8211; A list of integer-lists (integers usually represent the keys of the items)</li>
+<li><strong>min_sup</strong> &#8211; minimum support, i.e. minimum number of items for them to be considered frequent</li>
+<li><strong>with_hash_tree</strong> (<em>bool.</em>) &#8211; True is default and means that the hash tree variant is used. False uses simple variant.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">dictionary of frequent item tuples with their counts</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Dict[Tuple[int] : int]</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">kdd.fitemset.apriori.apriori</span> <span class="k">import</span> <span class="n">apriori</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data_set</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">min_sup</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">apriori</span><span class="p">(</span><span class="n">data_set</span><span class="p">,</span> <span class="n">min_sup</span><span class="p">)</span>
+<span class="go">{(8,): 4, (6,): 3, (7,): 4}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">min_sup</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">apriori</span><span class="p">(</span><span class="n">data_set</span><span class="p">,</span> <span class="n">min_sup</span><span class="p">)</span>
+<span class="go">{(8,): 4, (3,): 2, (7, 8, 9): 2, (9,): 2, (8, 9): 2, (6,): 3, (7,): 4, (7, 8): 2, (7, 9): 2}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kdd.fitemset.apriori.hash_tree">
+<span id="kdd-fitemset-apriori-hash-tree-module"></span><h2>kdd.fitemset.apriori.hash_tree module</h2>
+<dl class="class">
+<dt id="kdd.fitemset.apriori.hash_tree.HashTree">
+<em class="property">class </em><code class="descclassname">kdd.fitemset.apriori.hash_tree.</code><code class="descname">HashTree</code><span class="sig-paren">(</span><em>k</em>, <em>level</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kdd/fitemset/apriori/hash_tree.html#HashTree"><span class="viewcode-link">[source]</span></a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-kdd.fitemset.apriori.join">
+<span id="kdd-fitemset-apriori-join-module"></span><h2>kdd.fitemset.apriori.join module</h2>
+<dl class="function">
+<dt id="kdd.fitemset.apriori.join.join">
+<code class="descclassname">kdd.fitemset.apriori.join.</code><code class="descname">join</code><span class="sig-paren">(</span><em>list1</em>, <em>list2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kdd/fitemset/apriori/join.html#join"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Join two integer lists. The join of two lists is the equal prefix of the two lists with both last elements sorted and appended.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>list1</strong> &#8211; list of integers</li>
+<li><strong>list2</strong> &#8211; list of integers</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list of integers</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Examples:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">kdd.fitemset.apriori.join</span> <span class="k">import</span> <span class="n">join</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">join</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
+<span class="go">[1, 2, 3, 4]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">join</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
+<span class="go">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">join</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
+<span class="go">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">join</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="go">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">join</span><span class="p">([</span><span class="mi">785</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">785</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">1009</span><span class="p">])</span>
+<span class="go">[785, 43, 0, 1009]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">join</span><span class="p">([</span><span class="mi">785</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">1009</span><span class="p">],</span> <span class="p">[</span><span class="mi">785</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="go">[785, 43, 0, 1009]</span>
+</pre></div>
+</div>
+<p>Conditions for list1 and list2 to be joined:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">list1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">list2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">list1</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">list2</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">list1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">list1</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">list2</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="ow">not</span> <span class="n">list1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">list2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kdd.fitemset.apriori">
+<span id="module-contents"></span><h2>Module contents</h2>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Johannes Knaut.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
+    </div>
+  </body>
+</html>

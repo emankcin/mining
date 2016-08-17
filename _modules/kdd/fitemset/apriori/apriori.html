@@ -1,0 +1,257 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kdd.fitemset.apriori.apriori</title>
+    
+    <link rel="stylesheet" href="../../../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" /> 
+  </head>
+  <body role="document">
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">mining 0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kdd.fitemset.apriori.apriori</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">hash_tree</span> <span class="k">import</span> <span class="n">HashTree</span>
+<span class="kn">from</span> <span class="nn">join</span> <span class="k">import</span> <span class="n">join</span>
+
+
+<span class="k">def</span> <span class="nf">_retrieve_frequent_singleton_counts</span><span class="p">(</span><span class="n">item_lists</span><span class="p">,</span> <span class="n">min_sup</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Counts each item in a list of item lists. Only frequent items are returned.</span>
+
+<span class="sd">    An item set is frequent if its count is greater than or equal to the minimum support.</span>
+
+<span class="sd">    :param item_lists: list of integer lists</span>
+<span class="sd">    :param min_sup: minimum support</span>
+<span class="sd">    :return: dictionary with frequent singletons and their counts</span>
+<span class="sd">    :rtype: Dict[Tuple[int] : int]</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">    &gt;&gt;&gt; from kdd.fitemset.apriori.apriori import _retrieve_frequent_singleton_counts</span>
+
+<span class="sd">    &gt;&gt;&gt; data_set = [[0, 1, 2], [0, 1, 3]]</span>
+<span class="sd">    &gt;&gt;&gt; min_sup = 2</span>
+<span class="sd">    &gt;&gt;&gt; _retrieve_frequent_singleton_counts(data_set, min_sup)</span>
+<span class="sd">    {(0,): 2, (1,): 2}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">counts</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># scan data_set to count singleton item occurrences</span>
+    <span class="k">for</span> <span class="n">item_list</span> <span class="ow">in</span> <span class="n">item_lists</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">item_list</span><span class="p">:</span>
+
+            <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">item</span><span class="p">,)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">counts</span><span class="p">:</span>
+                <span class="n">counts</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">counts</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># filter out non-frequent items</span>
+    <span class="n">counts_copy</span> <span class="o">=</span> <span class="n">counts</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">counts_copy</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">counts</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">min_sup</span><span class="p">:</span>
+            <span class="n">counts</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">counts</span>
+
+
+<span class="k">def</span> <span class="nf">_item_lists_self_join</span><span class="p">(</span><span class="n">item_lists</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Example:</span>
+
+<span class="sd">    &gt;&gt;&gt; from kdd.fitemset.apriori.apriori import _item_lists_self_join</span>
+
+<span class="sd">    &gt;&gt;&gt; item_lists = [[1,2,3], [1,2,4], [1,3,5], [3,4,6], [3,4,8], [3,4,9]]</span>
+<span class="sd">    &gt;&gt;&gt; _item_lists_self_join(item_lists)</span>
+<span class="sd">    [[1, 2, 3, 4], [3, 4, 6, 8], [3, 4, 6, 9], [3, 4, 8, 9]]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">join_result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">item_lists</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+            <span class="n">joined</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">item_lists</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">item_lists</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">joined</span><span class="p">:</span>
+                <span class="n">join_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">joined</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">join_result</span>
+
+
+<span class="k">def</span> <span class="nf">_get_frequent_n_item_tuples_with_counts</span><span class="p">(</span><span class="n">data_set</span><span class="p">,</span> <span class="n">n_item_lists</span><span class="p">,</span> <span class="n">min_sup</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Example:</span>
+
+<span class="sd">    &gt;&gt;&gt; from kdd.fitemset.apriori.apriori import _get_frequent_n_item_tuples_with_counts</span>
+
+<span class="sd">    &gt;&gt;&gt; data_set = [[1,2,3,4,5], [2,3,4,5,6], [3,4,5,6,7]]</span>
+<span class="sd">    &gt;&gt;&gt; n_item_lists = [[2,3], [3,4]]</span>
+<span class="sd">    &gt;&gt;&gt; min_sup = 2</span>
+<span class="sd">    &gt;&gt;&gt; _get_frequent_n_item_tuples_with_counts(data_set, n_item_lists, min_sup)</span>
+<span class="sd">    {(3, 4): 3, (2, 3): 2}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">k_counts</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># count how often each of the k n_item_lists is subset of a data row</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data_set</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">n_item_list</span> <span class="ow">in</span> <span class="n">n_item_lists</span><span class="p">:</span>
+
+            <span class="n">contained</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">n_item_list</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">row</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">contained</span><span class="p">:</span>
+
+                <span class="n">n_item_tuple</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">n_item_list</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">n_item_tuple</span> <span class="ow">in</span> <span class="n">k_counts</span><span class="p">:</span>
+                    <span class="n">k_counts</span><span class="p">[</span><span class="n">n_item_tuple</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">k_counts</span><span class="p">[</span><span class="n">n_item_tuple</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># only put frequent item lists into result</span>
+    <span class="k">for</span> <span class="n">n_item_list</span> <span class="ow">in</span> <span class="n">n_item_lists</span><span class="p">:</span>
+
+        <span class="n">n_item_tuple</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">n_item_list</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">n_item_tuple</span> <span class="ow">in</span> <span class="n">k_counts</span> <span class="ow">and</span> <span class="n">k_counts</span><span class="p">[</span><span class="n">n_item_tuple</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_sup</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">n_item_tuple</span><span class="p">]</span> <span class="o">=</span> <span class="n">k_counts</span><span class="p">[</span><span class="n">n_item_tuple</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">def</span> <span class="nf">_get_frequent_n_item_lists</span><span class="p">(</span><span class="n">data_set</span><span class="p">,</span> <span class="n">n_item_lists</span><span class="p">,</span> <span class="n">min_sup</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Example:</span>
+
+<span class="sd">    &gt;&gt;&gt; from kdd.fitemset.apriori.apriori import _get_frequent_n_item_lists</span>
+
+<span class="sd">    &gt;&gt;&gt; data_set = [[1,2,3,4,5], [2,3,4,5,6], [3,4,5,6,7]]</span>
+<span class="sd">    &gt;&gt;&gt; n_item_lists = [[2,3], [3,4]]</span>
+<span class="sd">    &gt;&gt;&gt; min_sup = 2</span>
+<span class="sd">    &gt;&gt;&gt; _get_frequent_n_item_lists(data_set, n_item_lists, min_sup)</span>
+<span class="sd">    [[3, 4], [2, 3]]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">tup</span><span class="p">)</span> <span class="k">for</span> <span class="n">tup</span> <span class="ow">in</span> <span class="n">_get_frequent_n_item_tuples_with_counts</span><span class="p">(</span><span class="n">data_set</span><span class="p">,</span> <span class="n">n_item_lists</span><span class="p">,</span> <span class="n">min_sup</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+
+
+<span class="k">def</span> <span class="nf">_construct_hash_tree</span><span class="p">(</span><span class="n">item_lists</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">item_lists</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">item_lists</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Failed to construct hash tree of empty list.&quot;</span><span class="p">)</span>
+
+    <span class="n">ht</span> <span class="o">=</span> <span class="n">HashTree</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">item_list</span> <span class="ow">in</span> <span class="n">item_lists</span><span class="p">:</span>
+        <span class="n">ht</span><span class="o">.</span><span class="n">_insert</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">item_list</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">ht</span>
+
+
+<span class="k">def</span> <span class="nf">_get_frequent_n_item_tuples_with_counts_by_hash_tree</span><span class="p">(</span><span class="n">data_set</span><span class="p">,</span> <span class="n">hash_tree</span><span class="p">,</span> <span class="n">min_sup</span><span class="p">):</span>
+    <span class="n">result_dic</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">ta</span> <span class="ow">in</span> <span class="n">data_set</span><span class="p">:</span>
+        <span class="c1"># use merge sort because it&#39;s efficient for already sorted arrays</span>
+        <span class="n">ta</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">ta</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;mergesort&#39;</span><span class="p">))</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">hash_tree</span><span class="o">.</span><span class="n">_get_item_sets_in_transaction</span><span class="p">(</span><span class="n">ta</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">result_dic</span><span class="p">:</span>
+                <span class="n">result_dic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_dic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="n">tmp</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result_dic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="c1"># drop non-frequent item sets</span>
+    <span class="n">result_dic</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">result_dic</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;=</span> <span class="n">min_sup</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">result_dic</span>
+
+
+<div class="viewcode-block" id="apriori"><a class="viewcode-back" href="../../../../kdd.fitemset.apriori.html#kdd.fitemset.apriori.apriori.apriori">[docs]</a><span class="k">def</span> <span class="nf">apriori</span><span class="p">(</span><span class="n">data_set</span><span class="p">,</span> <span class="n">min_sup</span><span class="p">,</span> <span class="n">with_hash_tree</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The apriori algorithm for retrieving frequent item tuples together with their counts.</span>
+
+<span class="sd">    :param data_set: A list of integer-lists (integers usually represent the keys of the items)</span>
+<span class="sd">    :param min_sup: minimum support, i.e. minimum number of items for them to be considered frequent</span>
+<span class="sd">    :param with_hash_tree: True is default and means that the hash tree variant is used. False uses simple variant.</span>
+<span class="sd">    :type with_hash_tree: bool.</span>
+<span class="sd">    :return: dictionary of frequent item tuples with their counts</span>
+<span class="sd">    :rtype: Dict[Tuple[int] : int]</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">    &gt;&gt;&gt; from kdd.fitemset.apriori.apriori import apriori</span>
+
+<span class="sd">    &gt;&gt;&gt; data_set = [[6], [7], [8], [3,6], [4,7], [5,8], [1,2,3], [7,8,9], [6,7,8,9]]</span>
+<span class="sd">    &gt;&gt;&gt; min_sup = 3</span>
+<span class="sd">    &gt;&gt;&gt; apriori(data_set, min_sup)</span>
+<span class="sd">    {(8,): 4, (6,): 3, (7,): 4}</span>
+<span class="sd">    &gt;&gt;&gt; min_sup = 2</span>
+<span class="sd">    &gt;&gt;&gt; apriori(data_set, min_sup)</span>
+<span class="sd">    {(8,): 4, (3,): 2, (7, 8, 9): 2, (9,): 2, (8, 9): 2, (6,): 3, (7,): 4, (7, 8): 2, (7, 9): 2}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">_retrieve_frequent_singleton_counts</span><span class="p">(</span><span class="n">data_set</span><span class="p">,</span> <span class="n">min_sup</span><span class="p">)</span>
+    <span class="n">k_result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+
+        <span class="n">last_k_result</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">tup</span><span class="p">)</span> <span class="k">for</span> <span class="n">tup</span> <span class="ow">in</span> <span class="n">k_result</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+        <span class="n">new_k_input</span> <span class="o">=</span> <span class="n">_item_lists_self_join</span><span class="p">(</span><span class="n">last_k_result</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">new_k_input</span> <span class="o">==</span> <span class="p">[]:</span>
+            <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">with_hash_tree</span><span class="p">):</span>
+                <span class="n">hash_tree</span> <span class="o">=</span> <span class="n">_construct_hash_tree</span><span class="p">(</span><span class="n">new_k_input</span><span class="p">)</span>
+                <span class="n">k_result</span> <span class="o">=</span> <span class="n">_get_frequent_n_item_tuples_with_counts_by_hash_tree</span><span class="p">(</span><span class="n">data_set</span><span class="p">,</span> <span class="n">hash_tree</span><span class="p">,</span> <span class="n">min_sup</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">k_result</span> <span class="o">=</span> <span class="n">_get_frequent_n_item_tuples_with_counts</span><span class="p">(</span><span class="n">data_set</span><span class="p">,</span> <span class="n">new_k_input</span><span class="p">,</span> <span class="n">min_sup</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">k_result</span> <span class="o">==</span> <span class="p">{}:</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">k_result</span><span class="p">)</span>
+
+    <span class="c1"># print &quot;result: &quot;</span>
+    <span class="c1"># print result</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+</pre></div>
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Johannes Knaut.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kdd.fitemset.fptree package</title>
+    
+    <link rel="stylesheet" href="_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" /> 
+  </head>
+  <body role="document">
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="kdd.fitemset.apriori.html" title="kdd.fitemset.apriori package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">mining 0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >python</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="kdd.html" >kdd package</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="kdd.fitemset.html" accesskey="U">kdd.fitemset package</a> &raquo;</li> 
+      </ul>
+    </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="kdd-fitemset-fptree-package">
+<h1>kdd.fitemset.fptree package</h1>
+<div class="section" id="submodules">
+<h2>Submodules</h2>
+</div>
+<div class="section" id="module-kdd.fitemset.fptree.fp_tree">
+<span id="kdd-fitemset-fptree-fp-tree-module"></span><h2>kdd.fitemset.fptree.fp_tree module</h2>
+<dl class="class">
+<dt id="kdd.fitemset.fptree.fp_tree.FrequentPatternTree">
+<em class="property">class </em><code class="descclassname">kdd.fitemset.fptree.fp_tree.</code><code class="descname">FrequentPatternTree</code><span class="sig-paren">(</span><em>value</em>, <em>prefix</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kdd/fitemset/fptree/fp_tree.html#FrequentPatternTree"><span class="viewcode-link">[source]</span></a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-kdd.fitemset.fptree.fp_tree_algorithm">
+<span id="kdd-fitemset-fptree-fp-tree-algorithm-module"></span><h2>kdd.fitemset.fptree.fp_tree_algorithm module</h2>
+<dl class="function">
+<dt id="kdd.fitemset.fptree.fp_tree_algorithm.retrieve_frequent_item_tuples">
+<code class="descclassname">kdd.fitemset.fptree.fp_tree_algorithm.</code><code class="descname">retrieve_frequent_item_tuples</code><span class="sig-paren">(</span><em>data_set</em>, <em>min_sup</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kdd/fitemset/fptree/fp_tree_algorithm.html#retrieve_frequent_item_tuples"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Retrieve the frequent item tuples of a data set according to a minimum support.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data_set</strong> &#8211; list of integer lists</li>
+<li><strong>min_sup</strong> &#8211; the minimum amount for an item to be considered frequent</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a sorted list of item tuples that are frequent in the data set</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">List[Tuple[int]]</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">kdd.fitemset.fptree.fp_tree_algorithm</span> <span class="k">import</span> <span class="n">retrieve_frequent_item_tuples</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data_set</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">min_sup</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">retrieve_frequent_item_tuples</span><span class="p">(</span><span class="n">data_set</span><span class="p">,</span> <span class="n">min_sup</span><span class="p">)</span>
+<span class="go">[(1,), (2,), (3,), (3, 4), (4,)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kdd.fitemset.fptree">
+<span id="module-contents"></span><h2>Module contents</h2>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Johannes Knaut.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
+    </div>
+  </body>
+</html>

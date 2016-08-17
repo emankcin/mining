@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kdd.clustering.executor</title>
+    
+    <link rel="stylesheet" href="../../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" /> 
+  </head>
+  <body role="document">
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">mining 0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kdd.clustering.executor</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">pandas</span> <span class="k">import</span> <span class="n">read_csv</span>
+
+<span class="kn">from</span> <span class="nn">kmeans</span> <span class="k">import</span> <span class="n">KMeans</span>
+
+<span class="n">CSV_PATH</span> <span class="o">=</span> <span class="s2">&quot;src/main/resources/2d-sample.csv&quot;</span><span class="c1">#sys.argv[1]</span>
+<span class="n">CSV_COLUMN_DELIMITER</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">_load_csv_data</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">delim</span><span class="p">):</span>
+    <span class="n">engine</span> <span class="o">=</span> <span class="s2">&quot;python&quot;</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="n">delim</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="n">engine</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">dataset</span>
+
+
+<span class="sd">&quot;&quot;&quot;Apply kmeans to dataset&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../kdd.clustering.html#kdd.clustering.executor.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">_load_csv_data</span><span class="p">(</span><span class="n">CSV_PATH</span><span class="p">,</span> <span class="n">CSV_COLUMN_DELIMITER</span><span class="p">)</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">max_iter</span> <span class="o">=</span> <span class="mi">10</span>
+
+    <span class="n">handler</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+    <span class="n">handler</span><span class="o">.</span><span class="n">kmeans</span><span class="p">()</span>
+    <span class="k">while</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">max_iter</span><span class="p">:</span>
+        <span class="n">handler</span><span class="o">.</span><span class="n">reinitialize</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+        <span class="n">handler</span><span class="o">.</span><span class="n">kmeans</span><span class="p">()</span>
+        <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Johannes Knaut.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
+    </div>
+  </body>
+</html>
