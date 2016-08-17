@@ -1,3 +1,5 @@
+Github Pages: <https://emankcin.github.io/mining/>
+
 Algorithms:
 
 - clustering
