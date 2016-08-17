@@ -1,11 +1,14 @@
-Modules:
+Algorithms:
 
 - clustering
     - kmeans
 
 - frequent-itemset
     - apriori
-
+      - default
+      - hash tree
+    - fp tree
+    
 Commands after cloning:
 ```sh
 $ cd mining
