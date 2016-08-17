@@ -53,16 +53,14 @@ class FPTreeTest(FItemsetTestBase):
     def test_pattern_tree_is_single_path(self):
         single_path_example = _generate_frequent_pattern_tree([[1, 2, 3], [1, 2, 3], [1, 2], [1]])
         not_single_path_example = _generate_frequent_pattern_tree([[1, 2, 3], [1, 2, 4]])
-        another_single_path_example = _generate_frequent_pattern_tree([[1,2,3], [1,2,3]])
-        self.assertEqual([1,2], single_path_example.is_frequent_single_path(self.min_sup))
+        another_single_path_example = _generate_frequent_pattern_tree([[1, 2, 3], [1, 2, 3]])
+        self.assertEqual([1, 2], single_path_example.is_frequent_single_path(self.min_sup))
         self.assertFalse(not_single_path_example.is_frequent_single_path(self.min_sup))
         self.assertEqual([1], another_single_path_example.is_frequent_single_path(self.min_sup))
 
     def test_retrieve_frequent_item_sets_of_single_path(self):
         fpt_1 = _generate_frequent_pattern_tree(self.rearranged_data_set)
-        print fpt_1.retrieve_frequent_item_sets_of_single_path(self.min_sup)
-        fpt_2 = _generate_frequent_pattern_tree([[1,2,3], [1,2], [1,2]])
-        print fpt_2.retrieve_frequent_item_sets_of_single_path(self.min_sup)
+        fpt_2 = _generate_frequent_pattern_tree([[1, 2, 3], [1, 2], [1, 2]])
 
     def test_get_desc_list_of_frequent_one_items(self):
         self.assertEqual([1, 4, 2, 3], _get_desc_list_of_frequent_one_items(self.data_set, self.min_sup))
@@ -189,29 +187,20 @@ class FPTreeTest(FItemsetTestBase):
         fpt_4_1_expected = [1, [4], 3]
         self.assertEqual(fpt_4_1_expected, [fpt_4_1.value, fpt_4_1.prefix, fpt_4_1.count])
 
-    def test_mine_single_path_fp_tree(self):
-        data_set = [[1,2,3], [1,2,3], [1,2,3], [1,2]]
-        desc_list = _get_desc_list_of_frequent_one_items(data_set, self.min_sup)
-        pattern_base = _construct_pattern_base([1,2,3], _generate_frequent_pattern_tree(data_set))
-        list_of_cond_fp_trees = _convert_pattern_base_to_list_of_conditional_fp_trees(pattern_base)
-        result = []
-        for cond_fp_tree in list_of_cond_fp_trees:
-            print cond_fp_tree
-            result += _mine_fp_tree(cond_fp_tree, desc_list, self.min_sup)
-        print result
-
     def test_mine_fp_tree(self):
-        #desc_list = _get_desc_list_of_frequent_one_items(self.data_set, self.min_sup)
-        pattern_base = self.pattern_base_example_getter()
-        list_of_cond_fp_trees = _convert_pattern_base_to_list_of_conditional_fp_trees(pattern_base)
-
-    def test_retrieve_simple_single_path(self):
-        data_set = [[1,2,3], [1,2,3,4], [1,2,3], [1,2], [1]]
-        min_sup = 3
-        expected_result = retrieve(data_set, min_sup)
-        self.assertEqual([(1,), (1, 2), (1, 2, 3), (1, 3), (2,), (2, 3), (3,)], expected_result)
+        fpt = _generate_frequent_pattern_tree([[1, 2, 3], [1, 2], [3, 4, 5], [3, 4, 5], [2, 3, 4]])
+        min_sup = 2
+        desc_list = [1, 2, 3, 4, 5]
+        expected = {(1,), (1, 2), (2,), (2, 3), (3,), (3, 4), (3, 4, 5), (3, 5), (4,), (4, 5), (5,)}
+        result = _mine_fp_tree(fpt, desc_list, min_sup)
+        self.assertEqual(expected, result)
 
     def test_retrieve(self):
-        expected_result = {(1,), (2,), (4,)}
-        min_sup = 4
-        self.assertEqual(expected_result, retrieve(self.data_set, min_sup))
+        self.assertEqual([(1,), (1, 2), (1, 2, 4), (1, 3), (1, 3, 4), (1, 4), (2,), (2, 4), (3,), (3, 4), (4,)],
+                         retrieve(self.data_set, 1))
+        self.assertEqual([(1,), (1, 2), (1, 3), (1, 4), (2,), (3,), (3, 4), (4,)], retrieve(self.data_set, 2))
+        self.assertEqual([(1,), (1, 4), (2,), (3,), (4,)], retrieve(self.data_set, self.min_sup))
+        self.assertEqual([(1,), (4,)], retrieve(self.data_set, 4))
+        self.assertEqual([(1,)], retrieve(self.data_set, 5))
+        self.assertEqual([(1,)], retrieve(self.data_set, 6))
+        self.assertEqual([], retrieve(self.data_set, 7))

@@ -92,6 +92,7 @@ class FrequentPatternTree():
     def retrieve_frequent_item_sets_of_multi_path(self, min_sup):
         return set()
 
+
 def _get_desc_list_of_frequent_one_items(data_set, min_sup):
     items = {}
     for item_list in data_set:
@@ -150,6 +151,7 @@ def _convert_pattern_base_to_list_of_conditional_fp_trees(pattern_base):
         result_list.append(conditional_fpt)
     return result_list
 
+
 def is_subset(self, int_list, list_of_int_lists):
     int_tuple = tuple(int_list)
     list_of_int_tuples = []
@@ -158,6 +160,7 @@ def is_subset(self, int_list, list_of_int_lists):
     sub_list = []
     sub_list.append(int_tuple)
     return set(sub_list).issubset(set(list_of_int_tuples))
+
 
 def _mine_fp_tree(fp_tree, desc_list, min_sup):
     result = set()
@@ -173,11 +176,13 @@ def _mine_fp_tree(fp_tree, desc_list, min_sup):
             tree_with_root.children[tree.value] = tree
             is_single_path = tree_with_root.is_frequent_single_path(min_sup)
             if is_single_path:
-                res = tree_with_root.retrieve_frequent_item_sets_of_single_path(min_sup)
+                reprs = tree_with_root.retrieve_frequent_item_sets_of_single_path(min_sup)
             else:
-                res = tree_with_root.retrieve_frequent_item_sets_of_multi_path(min_sup)
+                res = _mine_fp_tree(tree_with_root, desc_list, min_sup)
             result = result.union(res)
 
+    if (-1,) in result:
+        result.remove((-1,))
     return result
 
 
