@@ -1,5 +1,3 @@
-import numpy as np
-
 from kdd.fitemset.fptree.fp_tree import FrequentPatternTree
 
 
@@ -21,16 +19,12 @@ def _rearrange_data_set_according_to_one_items(data_set, desc_list):
     rearranged = []
 
     for item_list in data_set:
-        tmp = [i for i in item_list if i in desc_list]
-        np_tmp = np.array(tmp)
-
-        tmp_desc = [i for i in desc_list if i in tmp]
-        np_tmp_desc = np.array(tmp_desc)
-
-        ind = np_tmp_desc.argsort()
-        desc_count_sorted_list = np_tmp[ind].tolist()
-
-        rearranged.append(desc_count_sorted_list)
+        new_item_list = []
+        for i in desc_list:
+            if i in item_list:
+                new_item_list.append(i)
+        if new_item_list:
+            rearranged.append(new_item_list)
 
     return rearranged
 

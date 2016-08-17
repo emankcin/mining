@@ -14,6 +14,7 @@ class FPTreeAlgorithmTest(FPTreeTestBase):
         self.assertEqual(self.rearranged_data_set,
                          _rearrange_data_set_according_to_one_items(self.data_set, [1, 4, 2, 3]))
 
+
     def test_generate_frequent_pattern_tree(self):
 
         fpt = _generate_frequent_pattern_tree(self.rearranged_data_set)
@@ -141,3 +142,10 @@ class FPTreeAlgorithmTest(FPTreeTestBase):
         self.assertEqual([(1,)], retrieve_frequent_item_tuples(self.data_set, 5))
         self.assertEqual([(1,)], retrieve_frequent_item_tuples(self.data_set, 6))
         self.assertEqual([], retrieve_frequent_item_tuples(self.data_set, 7))
+
+        other_data_set = [(0,), (1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,),
+                         (0,2), (0,3), (0,6), (1,6), (1,8), (2,4), (3,8), (4,6), (5,8), (6,8),
+                         (1,2,4), (2,3,4), (6,7,8),
+                         (1,2,3,4), (3,4,5,6)]
+        self.assertEqual([(2,), (3,), (4,), (6,), (8,)], retrieve_frequent_item_tuples(other_data_set, 6))
+
