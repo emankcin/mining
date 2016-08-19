@@ -1,4 +1,4 @@
-Github Pages: <https://emankcin.github.io/mining/>
+Project Pages: <https://emankcin.github.io/mining/>
 
 Algorithms:
 
@@ -10,7 +10,8 @@ Algorithms:
         - default
         - hash tree
     - fp tree
-    
+
+
 Commands after cloning:
 ```sh
 $ cd mining
@@ -25,3 +26,5 @@ Command to get out of virtual environment:
 ```sh
 $ deactivate
 ```
+
+Tested on: Ubuntu 16.04 LTS
