@@ -8,8 +8,7 @@ Project Pages: <https://emankcin.github.io/mining/>
 <th>Variant</th>
 </tr>
 </thead>
-</table>
-<table>
+<tbody>
 <tr>
 <td>Clustering</td>
 <td>K-Means</td>
@@ -27,6 +26,7 @@ Project Pages: <https://emankcin.github.io/mining/>
 <td>Frequent Pattern Tree</td>
 <td>default</td>
 </tr>
+</tbody>
 </table>
 
 
