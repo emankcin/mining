@@ -1,5 +1,4 @@
-Project Pages: <https://emankcin.github.io/mining/>
-
+Content:
 <table>
 <thead>
 <tr>
@@ -29,6 +28,7 @@ Project Pages: <https://emankcin.github.io/mining/>
 </tbody>
 </table>
 
+Project Pages: <https://emankcin.github.io/mining/>
 
 Commands after cloning:
 ```sh
