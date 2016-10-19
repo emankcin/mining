@@ -1,15 +1,33 @@
 Project Pages: <https://emankcin.github.io/mining/>
 
-Algorithms:
-
-- clustering
-    - kmeans
-
-- frequent-itemset
-    - apriori
-        - default
-        - hash tree
-    - fp tree
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Algorithm</th>
+<th>Variant</th>
+</tr>
+</thead>
+</table>
+<table>
+<tr>
+<td>Clustering</td>
+<td>K-Means</td>
+<td>default</td>
+</tr>
+<tr>
+<td rowspan="3">Frequent Itemset</td>
+<td rowspan="2">Apriori</td>
+<td>default</td>
+</tr>
+<tr>
+<td>hash tree</td>
+</tr>
+<tr>
+<td>Frequent Pattern Tree</td>
+<td>default</td>
+</tr>
+</table>
 
 
 Commands after cloning:
