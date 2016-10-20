@@ -1,3 +1,8 @@
+<h1>Project: mining</h1>
+
+
+<h2>Info</h2>
+
 <table>
 <tr>
 <th>Project Name</th>
@@ -16,9 +21,12 @@
 <td colspan="3"><a href="https://emankcin.github.io/mining/">https://emankcin.github.io/mining/</a>
 </td>
 </tr>
+</table>
 
-<tr><td colspan="4"></td></tr>
 
+<h2>Algorithms</h2>
+
+<table>
 <tr>
 <th rowspan="6">Content</th>
 <th>Module</th>
@@ -46,9 +54,12 @@
 <td>Classification</td>
 <td colspan="2">t.b.o.</td>
 </tr>
+</table>
 
-<tr><td colspan="4"></td></tr>
 
+<h2>Getting started</h2>
+
+<table>
 <tr>
 <th>Clone</th>
 <td colspan="3">$ git clone https://github.com/emankcin/mining.git</td>
@@ -62,9 +73,12 @@
 <tr><td colspan="3">(venv) $ pyb install_dependencies</td></tr>
 <tr><td colspan="3">(venv) $ pyb docs</td></tr>
 </tr>
+</table>
 
-<tr><td colspan="4"></td></tr>
 
+<h2>Develop</h2>
+
+<table>
 <tr>
 <th>Activate venv</th>
 <td colspan="3">$ . venv/bin/activate</td>
@@ -81,9 +95,12 @@
 <th>Leave venv</td>
 <td colspan="3">(venv) $ deactivate</td>
 </tr>
+</table>
 
-<tr><td colspan="4"></td></tr>
 
+<h2>Environment</h2>
+
+<table>
 <tr>
 <th rowspan="2">Tested on</th>
 <th>OS</th>
