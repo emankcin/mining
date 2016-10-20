@@ -1,6 +1,8 @@
-Content:
 <table>
 <thead>
+<tr>
+<th colspan="3">Content</th>
+</tr>
 <tr>
 <th>Module</th>
 <th>Algorithm</th>
@@ -25,24 +27,64 @@ Content:
 <td>Frequent Pattern Tree</td>
 <td>default</td>
 </tr>
+<tr>
+<td>Classification</td>
+<td colspan="2">t.b.o.</td>
+</tr>
 </tbody>
 </table>
 
-Project Pages: <https://emankcin.github.io/mining/>
+<table>
+<thead>
+<tr>
+<th>Project Pages</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td markdown="1">
+<https://emankcin.github.io/mining/>
+</td>
+</tr>
+</tbody>
+</table>
 
-Commands after cloning:
-```sh
-$ cd mining
-$ virtualenv venv
-$ . venv/bin/activate
-$ pip install pybuilder
-$ pyb install_dependencies
-$ pyb docs
-```
+<table>
+<thead>
+<tr>
+<th>Commands after cloning</th>
+</thead>
+<tbody>
+<tr><td><ul style="list-style: none;
+margin-left: 0;
+padding-left: 1em;
+text-indent: -1em;">
+``$ cd mining``
+``$ virtualenv venv``
+``$ . venv/bin/activate``
+``$ pip install pybuilder``
+``$ pyb install_dependencies``
+``$ pyb docs``
+</ul></td></tr>
+</tbody>
+</table>
 
-Command to get out of virtual environment:
-```sh
-$ deactivate
-```
+<table>
+<thead>
+<tr>
+<th>Command to leave virtual environment<th>
+</thead>
+<tbody>
+<tr><td>``$ deactivate``</td></tr>
+</tbody>
+</table>
 
-Tested on: Ubuntu 16.04 LTS
+<table>
+<thead>
+<tr>
+<th>Tested on<th>
+</thead>
+<tbody>
+<tr><td>Ubuntu 16.04 LTS</td></tr>
+</tbody>
+</table>
