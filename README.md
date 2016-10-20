@@ -1,5 +1,4 @@
 <table>
-<thead>
 <tr>
 <th colspan="3">Content</th>
 </tr>
@@ -8,8 +7,6 @@
 <th>Algorithm</th>
 <th>Variant</th>
 </tr>
-</thead>
-<tbody>
 <tr>
 <td>Clustering</td>
 <td>K-Means</td>
@@ -31,60 +28,31 @@
 <td>Classification</td>
 <td colspan="2">t.b.o.</td>
 </tr>
-</tbody>
 </table>
 
 <table>
-<thead>
-<tr>
-<th>Project Pages</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td markdown="1">
-<https://emankcin.github.io/mining/>
-</td>
-</tr>
-</tbody>
+<tr><th>Project Pages</th></tr>
+<tr><td><a href="https://emankcin.github.io/mining/">https://emankcin.github.io/mining/</a></td></tr>
 </table>
 
 <table>
-<thead>
-<tr>
-<th>Commands after cloning</th>
-</thead>
-<tbody>
-<tr><td><ul style="list-style: none;
-margin-left: 0;
-padding-left: 1em;
-text-indent: -1em;">
-``$ cd mining``
-``$ virtualenv venv``
-``$ . venv/bin/activate``
-``$ pip install pybuilder``
-``$ pyb install_dependencies``
-``$ pyb docs``
+<tr><th>Commands after cloning</th></tr>
+<tr><td><ul style="list-style: none; margin-left: 0; padding-left: 1em; text-indent: -1em;">
+<li>$ cd mining</li>
+<li>$ virtualenv venv</li>
+<li>$ . venv/bin/activate</li>
+<li>$ pip install pybuilder</li>
+<li>$ pyb install_dependencies</li>
+<li>$ pyb docs</li>
 </ul></td></tr>
-</tbody>
 </table>
 
 <table>
-<thead>
-<tr>
-<th>Command to leave virtual environment<th>
-</thead>
-<tbody>
+<tr><th>Command to leave virtual environment<th></tr>
 <tr><td>``$ deactivate``</td></tr>
-</tbody>
 </table>
 
 <table>
-<thead>
-<tr>
-<th>Tested on<th>
-</thead>
-<tbody>
+<tr><th>Tested on<th></tr>
 <tr><td>Ubuntu 16.04 LTS</td></tr>
-</tbody>
 </table>
