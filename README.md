@@ -46,11 +46,11 @@
 </table>
 
 <table>
-<tr><th>Command to leave virtual environment<th></tr>
+<tr><th>Command to leave virtual environment</th></tr>
 <tr><td>$ deactivate</td></tr>
 </table>
 
 <table>
-<tr><th>Tested on<th></tr>
+<tr><th>Tested on</th></tr>
 <tr><td>Ubuntu 16.04 LTS</td></tr>
 </table>
