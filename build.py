@@ -36,5 +36,8 @@ def initialize(project):
     project.build_depends_on('numpy')
     project.build_depends_on('matplotlib')
     project.build_depends_on('pandas')
-
+    project.build_depends_on('sphinx')
+    project.build_depends_on('cython', '==0.23')
+    project.build_depends_on('kivy')
+    
     project.version = "0.1"
