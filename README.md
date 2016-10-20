@@ -37,19 +37,17 @@
 
 <table>
 <tr><th>Commands after cloning</th></tr>
-<tr><td><ul style="list-style: none; margin-left: 0; padding-left: 1em; text-indent: -1em;">
-<li>$ cd mining</li>
-<li>$ virtualenv venv</li>
-<li>$ . venv/bin/activate</li>
-<li>$ pip install pybuilder</li>
-<li>$ pyb install_dependencies</li>
-<li>$ pyb docs</li>
-</ul></td></tr>
+<tr><td>$ cd mining</td></tr>
+<tr><td>$ virtualenv venv</td></tr>
+<tr><td>$ . venv/bin/activate</td></tr>
+<tr><td>$ pip install pybuilder</td></tr>
+<tr><td>$ pyb install_dependencies</td></tr>
+<tr><td>$ pyb docs</td></tr>
 </table>
 
 <table>
 <tr><th>Command to leave virtual environment<th></tr>
-<tr><td>``$ deactivate``</td></tr>
+<tr><td>$ deactivate</td></tr>
 </table>
 
 <table>
