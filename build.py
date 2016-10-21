@@ -3,7 +3,6 @@ from os import system
 
 use_plugin("python.core")
 use_plugin("python.unittest")
-use_plugin("python.coverage")
 use_plugin("python.install_dependencies")
 use_plugin("python.distutils")
 use_plugin("python.pycharm")
@@ -39,5 +38,5 @@ def initialize(project):
     project.build_depends_on('sphinx')
     project.build_depends_on('cython', '==0.23')
     project.build_depends_on('kivy')
-    
+
     project.version = "0.1"
