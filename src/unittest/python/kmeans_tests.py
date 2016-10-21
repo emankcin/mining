@@ -18,7 +18,7 @@ class KMeansTest(unittest.TestCase):
         self.assertEqual(new_k, len(self.k_means.centroids))
 
     def test_kmeans(self):
-        self.k_means.kmeans()
+        self.k_means.kmeans(visualizeSteps=0)
         self.assertEqual(self.k, self.k_means.k)
         self.assertEqual(self.k, len(self.k_means.clusters))
         self.assertEqual(self.k, len(self.k_means.centroids))

@@ -64,20 +64,21 @@ class KMeans:
         return self._clusters
 
 
-    def kmeans(self, visualizeSteps=False):
+    def kmeans(self, visualizeSteps=1):
         """
         Find k centroids of clusters in the data set and visualize the result.
 
         :param visualizeSteps (bool): flag for visualization of each iteration result
         """
         while True:
-            if visualizeSteps:
+            if visualizeSteps>=2:
                 self._visualize_step()
             self._assign_points_to_nearest_centroids()
             result_is_stable = self._update_centroids()
             if result_is_stable:
                 # plot end result
-                self._visualize_step()
+                if visualizeSteps>=1:
+                    self._visualize_step()
                 break
 
     # generate a random point inside the given data range
